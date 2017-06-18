@@ -101,8 +101,7 @@ class FlowTableEntry(Flow):
         """
         eth(src=xxxx,dst=xxxx)
         """
-        smac = ''
-        dmac = ''
+        items = []
 
         def get_mac(low, high):
             mac1 = self[low] or '00'
@@ -126,7 +125,15 @@ class FlowTableEntry(Flow):
         self._ignore.append('outer_headers.dmac_15_0')
         self._ignore.append('outer_headers.dmac_47_16')
 
-        return 'eth(src=%s,dst=%s)' % (smac, dmac)
+        if smac:
+            items.append('src='+smac)
+        if dmac:
+            items.append('dst='+dmac)
+
+        if not items:
+            return
+
+        return 'eth(%s)' % ','.join(items)
 
     @property
     def in_port(self):
