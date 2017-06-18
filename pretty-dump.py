@@ -104,9 +104,12 @@ class FlowTableEntry(Flow):
 
         def get_port(k):
             try:
-                v = int(self[k], 0)
+                port = str(int(self[k], 0))
+                port_mask = self.group[k]
                 self._ignore.append(k)
-                return v
+                if port_mask != '0xffff':
+                    port += '/' + port_mask
+                return port
             except TypeError:
                 return
 
@@ -115,10 +118,10 @@ class FlowTableEntry(Flow):
             items = []
             sport = get_port('outer_headers.%s_sport' % p)
             if sport:
-                items.append('src=%d' % sport)
+                items.append('src=%s' % sport)
             dport = get_port('outer_headers.%s_dport' % p)
             if dport:
-                items.append('dst=%d' % dport)
+                items.append('dst=%s' % dport)
             if not items:
                 continue
             out += ',%s(%s)' % (p, ','.join(items))
