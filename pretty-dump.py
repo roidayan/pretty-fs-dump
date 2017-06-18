@@ -3,6 +3,9 @@
 import re
 import sys
 import argparse
+import socket
+import struct
+
 
 fts = {}
 fgs = {}
@@ -58,6 +61,25 @@ class FlowTableEntry(Flow):
         eth_type = '0x' + self['outer_headers.ethertype'][2:].zfill(4)
         # TODO: in verbose print tcp,udp,arp,etc
         return 'eth_type(%s)' % eth_type
+
+    @property
+    def ipv4(self):
+
+        def get_ip(k):
+            self._ignore.append(k)
+            ip = self[k]
+            if ip:
+                ip = int2ip(int(ip, 0))
+            else:
+                ip = None
+            return ip
+
+        src = get_ip('outer_headers.src_ip_31_0')
+        dst = get_ip('outer_headers.dst_ip_31_0')
+
+        if not src and not dst:
+            return
+        return 'ipv4(src=%s,dst=%s)' % (src, dst)
 
     @property
     def mac(self):
@@ -142,6 +164,7 @@ class FlowTableEntry(Flow):
         x.append(self.in_port)
         x.append(self.mac)
         x.append(self.ethertype)
+        x.append(self.ipv4)
         x.append(self.action)
 
         # find unmatches attrs
@@ -152,7 +175,13 @@ class FlowTableEntry(Flow):
         if a:
             print '  -Missed: %s' % ', '.join(a)
 
+        x = list(filter(None, x))
+
         return ','.join(x)
+
+
+def int2ip(addr):
+    return socket.inet_ntoa(struct.pack("!I", addr))
 
 
 def parse_args():
