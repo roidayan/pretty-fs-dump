@@ -97,6 +97,34 @@ class FlowTableEntry(Flow):
         return 'ipv4(%s)' % ','.join(items)
 
     @property
+    def ports(self):
+
+        def get_port(k):
+            try:
+                v = int(self[k], 0)
+                self._ignore.append(k)
+                return v
+            except TypeError:
+                return
+
+        out = ''
+        for p in ['udp', 'tcp']:
+            items = []
+            sport = get_port('outer_headers.%s_sport' % p)
+            if sport:
+                items.append('src=%d' % sport)
+            dport = get_port('outer_headers.%s_dport' % p)
+            if dport:
+                items.append('dst=%d' % dport)
+            if not items:
+                continue
+            out += ',%s(%s)' % (p, ','.join(items))
+
+        # udp(src=,dst=)
+        # tcp(src=,dst=)
+        return out.lstrip(',')
+
+    @property
     def mac(self):
         """
         eth(src=xxxx,dst=xxxx)
@@ -187,6 +215,7 @@ class FlowTableEntry(Flow):
         x.append(self.mac)
         x.append(self.ethertype)
         x.append(self.ipv4)
+        x.append(self.ports)
         x.append(self.action)
 
         # find unmatches attrs
