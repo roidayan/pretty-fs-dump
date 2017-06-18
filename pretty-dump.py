@@ -182,6 +182,40 @@ class FlowTableEntry(Flow):
         return 'eth(%s)' % ','.join(items)
 
     @property
+    def is_vlan(self):
+        return self.get_mask('outer_headers.cvlan_tag') != '0x0'
+
+    @property
+    def vlan(self):
+        if not self.is_vlan:
+            return
+
+        self._ignore.append('outer_headers.cvlan_tag')
+
+        def get_vlan():
+            vlan_id = str(int(self['outer_headers.first_vid'], 0))
+            vlan_mask = self.get_mask('outer_headers.first_vid')
+            if vlan_mask != '0xfff':
+                vlan_id += '/' + vlan_mask
+            self._ignore.append('outer_headers.first_vid')
+            return vlan_id
+
+        def get_prio():
+            try:
+                prio = str(int(self['outer_headers.first_prio'], 0))
+            except TypeError:
+                prio = '0'
+            prio_mask = self.get_mask('outer_headers.first_prio')
+            if prio_mask != '0x7':
+                prio += '/' + prio_mask
+            self._ignore.append('outer_headers.first_prio')
+            return prio
+
+        v = get_vlan()
+        p = get_prio()
+        return 'vlan(vid=%s,pcp=%s)' % (v, p)
+
+    @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
         return 'in_port(%s)' % self['misc_parameters.source_port']
@@ -191,11 +225,13 @@ class FlowTableEntry(Flow):
         self._ignore.append('action')
         act = int(self['action'], 16)
         act &= ~FT_ACTION_COUNT
-        act1 = ''
+        act1 = []
 
+        if self.is_vlan:
+            act1.append('pop_vlan')
         if act & FT_ACTION_DROP:
             act &= ~FT_ACTION_DROP
-            act1 += ',drop'
+            act1.append('drop')
         if act & FT_ACTION_FWD:
             self._ignore.append('destination_list_size')
             act &= ~FT_ACTION_FWD
@@ -207,12 +243,11 @@ class FlowTableEntry(Flow):
                 if dst_type.split()[0] != 'VPORT':
                     print 'ERROR: unsupported dst type %s' % dst_type
                     continue
-                act1 += ',%s' % dst_id
+                act1.append(dst_id)
         if act:
             print 'ERROR: unknown action %s' % act
 
-        act1 = act1.lstrip(',')
-        return ' action:%s' % act1
+        return ' action:%s' % ','.join(act1)
 
     def __str__(self):
         x = []
@@ -231,9 +266,16 @@ class FlowTableEntry(Flow):
 
         x.append(self.in_port)
         x.append(self.mac)
-        x.append(self.ethertype)
-        x.append(self.ipv4)
-        x.append(self.ports)
+        x.append(self.vlan)
+        y = []
+        y.append(self.ethertype)
+        y.append(self.ipv4)
+        y.append(self.ports)
+        if self.is_vlan and y:
+            y = list(filter(None, y))
+            x.append('encap(' + ','.join(y) + ')')
+        else:
+            x.extend(y)
         x.append(self.action)
 
         # find unmatches attrs
