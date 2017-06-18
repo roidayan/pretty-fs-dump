@@ -149,15 +149,14 @@ class FlowTableEntry(Flow):
 
             mac = mac2 + mac1
             mac = re.sub(r'(..)', r'\1:', mac).rstrip(':')
+
+            self._ignore.append(low)
+            self._ignore.append(high)
+
             return mac
 
         smac = get_mac('outer_headers.smac_15_0', 'outer_headers.smac_47_16')
         dmac = get_mac('outer_headers.dmac_15_0', 'outer_headers.dmac_47_16')
-
-        self._ignore.append('outer_headers.smac_15_0')
-        self._ignore.append('outer_headers.smac_47_16')
-        self._ignore.append('outer_headers.dmac_15_0')
-        self._ignore.append('outer_headers.dmac_47_16')
 
         if smac:
             items.append('src='+smac)
