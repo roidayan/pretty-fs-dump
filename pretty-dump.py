@@ -69,11 +69,14 @@ class FlowTableEntry(Flow):
         def get_ip(k):
             self._ignore.append(k)
             ip = self[k]
-            if ip:
+            ip_mask = self.group[k]
+            if ip_mask:
                 ip = int2ip(int(ip, 0))
+                if ip_mask != '0xffffffff':
+                    ip += '/' + int2ip(int(ip_mask, 0))
+                return ip
             else:
-                ip = None
-            return ip
+                return None
 
         src = get_ip('outer_headers.src_ip_31_0')
         dst = get_ip('outer_headers.dst_ip_31_0')
