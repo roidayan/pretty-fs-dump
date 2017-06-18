@@ -64,6 +64,7 @@ class FlowTableEntry(Flow):
 
     @property
     def ipv4(self):
+        items = []
 
         def get_ip(k):
             self._ignore.append(k)
@@ -77,9 +78,23 @@ class FlowTableEntry(Flow):
         src = get_ip('outer_headers.src_ip_31_0')
         dst = get_ip('outer_headers.dst_ip_31_0')
 
-        if not src and not dst:
+        try:
+            ip_proto = int(self['outer_headers.ip_protocol'], 0)
+            self._ignore.append('outer_headers.ip_protocol')
+        except TypeError:
+            ip_proto = None
+
+        if src:
+            items.append('src='+src)
+        if dst:
+            items.append('dst='+dst)
+        if ip_proto:
+            items.append('ip_proto=%d' % ip_proto)
+
+        if not items:
             return
-        return 'ipv4(src=%s,dst=%s)' % (src, dst)
+
+        return 'ipv4(%s)' % ','.join(items)
 
     @property
     def mac(self):
