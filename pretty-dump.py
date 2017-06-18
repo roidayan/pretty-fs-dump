@@ -9,6 +9,9 @@ fgs = {}
 ftes = []
 
 
+FDB_UPLINK_VPORT = '0xffff'
+
+# table type
 FT_ESW_FDB = '0x4'
 
 
@@ -16,8 +19,12 @@ class Flow():
     def __init__(self, attr):
         self.attr = attr
 
+    @property
+    def attrs(self):
+        return self.attr.copy()
+
     def __getitem__(self, key):
-        return self.attr[key]
+        return self.attr.get(key, None)
 
 
 class FlowGroup(Flow):
@@ -37,8 +44,69 @@ class FlowTableEntry(Flow):
             #print 'ERROR: fte without group id'
             return None
 
+    @property
+    def mac(self):
+        """
+        eth(src=xxxx,dst=xxxx)
+        """
+        smac = ''
+        dmac = ''
+
+        def get_mac(low, high):
+            mac1 = self[low] or '00'
+            mac1 = mac1[2:].zfill(4)
+            mac2 = self[high]
+
+            if mac2:
+                mac2 = mac2[2:]
+            else:
+                mac2 = '00000000'
+
+            mac = mac2 + mac1
+            mac = re.sub(r'(..)', r'\1:', mac).rstrip(':')
+            return mac
+
+        smac = get_mac('outer_headers.smac_15_0', 'outer_headers.smac_47_16')
+        dmac = get_mac('outer_headers.dmac_15_0', 'outer_headers.dmac_47_16')
+
+        self._ignore.append('outer_headers.smac_15_0')
+        self._ignore.append('outer_headers.smac_47_16')
+        self._ignore.append('outer_headers.dmac_15_0')
+        self._ignore.append('outer_headers.dmac_47_16')
+
+        return 'eth(src=%s,dst=%s)' % (smac, dmac)
+
+    @property
+    def in_port(self):
+        self._ignore.append('misc_parameters.source_port')
+        return 'in_port(%s)' % self['misc_parameters.source_port']
+
     def __str__(self):
-        return 'FTE. my group is %s' % self.group
+        x = []
+        a = self.attrs
+
+        self._ignore = [
+            'group_id',
+            'table_id',
+            'flow_index',
+            'gvmi',
+            'valid',
+            'flow_counter_list_size', # TODO: get counter
+            'flow_counter[0].flow_counter_id',
+        ]
+
+        x.append(self.in_port)
+        x.append(self.mac)
+
+        # find unmatches attrs
+        for i in self._ignore:
+            if i in a:
+                del a[i]
+
+        if a:
+            print '  -Missed: %s' % ', '.join(a)
+
+        return ','.join(x)
 
 
 def parse_args():
