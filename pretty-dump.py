@@ -137,10 +137,10 @@ class FlowTableEntry(Flow):
         """
         items = []
 
-        def get_mac(low, high):
-            mac1 = self[low] or '00'
+        def get_mac_helper(low, high):
+            mac1 = low or '00'
             mac1 = mac1[2:].zfill(4)
-            mac2 = self[high]
+            mac2 = high
 
             if mac2:
                 mac2 = mac2[2:]
@@ -149,10 +149,17 @@ class FlowTableEntry(Flow):
 
             mac = mac2 + mac1
             mac = re.sub(r'(..)', r'\1:', mac).rstrip(':')
+            return mac
 
+        def get_mac(low, high):
+            if not self.group[low] and not self.group[high]:
+                return
+            mac = get_mac_helper(self[low], self[high])
+            mac_mask = get_mac_helper(self.group[low], self.group[high])
+            if mac_mask != 'ff:ff:ff:ff:ff:ff':
+                mac += '/' + mac_mask
             self._ignore.append(low)
             self._ignore.append(high)
-
             return mac
 
         smac = get_mac('outer_headers.smac_15_0', 'outer_headers.smac_47_16')
