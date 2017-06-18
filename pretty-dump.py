@@ -45,6 +45,13 @@ class FlowTableEntry(Flow):
             return None
 
     @property
+    def ethertype(self):
+        self._ignore.append('outer_headers.ethertype')
+        eth_type = '0x' + self['outer_headers.ethertype'][2:].zfill(4)
+        # TODO: in verbose print tcp,udp,arp,etc
+        return 'eth_type(%s)' % eth_type
+
+    @property
     def mac(self):
         """
         eth(src=xxxx,dst=xxxx)
@@ -97,6 +104,7 @@ class FlowTableEntry(Flow):
 
         x.append(self.in_port)
         x.append(self.mac)
+        x.append(self.ethertype)
 
         # find unmatches attrs
         for i in self._ignore:
