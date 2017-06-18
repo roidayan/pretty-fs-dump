@@ -107,8 +107,17 @@ class FlowTableEntry(Flow):
             act &= ~FT_ACTION_DROP
             act1 += ',drop'
         if act & FT_ACTION_FWD:
+            self._ignore.append('destination_list_size')
             act &= ~FT_ACTION_FWD
-            act1 = ',fwd' # TODO dst port
+            for i in range(int(self['destination_list_size'], 0)):
+                self._ignore.append('destination[%d].destination_id' % i)
+                self._ignore.append('destination[%d].destination_type' % i)
+                dst_id = self['destination[%d].destination_id' % i]
+                dst_type = self['destination[%d].destination_type' % i]
+                if dst_type.split()[0] != 'VPORT':
+                    print 'ERROR: unsupported dst type %s' % dst_type
+                    continue
+                act1 += ',%s' % dst_id
         if act:
             print 'ERROR: unknown action %s' % act
 
