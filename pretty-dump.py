@@ -82,7 +82,10 @@ class FlowTableEntry(Flow):
         dst = get_ip('outer_headers.dst_ip_31_0')
 
         try:
-            ip_proto = int(self['outer_headers.ip_protocol'], 0)
+            ip_proto = str(int(self['outer_headers.ip_protocol'], 0))
+            ip_proto_mask = self.group['outer_headers.ip_protocol']
+            if ip_proto_mask != '0xff':
+                ip_proto += '/' + ip_proto_mask
             self._ignore.append('outer_headers.ip_protocol')
         except TypeError:
             ip_proto = None
@@ -92,7 +95,7 @@ class FlowTableEntry(Flow):
         if dst:
             items.append('dst='+dst)
         if ip_proto:
-            items.append('ip_proto=%d' % ip_proto)
+            items.append('ip_proto=%s' % ip_proto)
 
         if not items:
             return
