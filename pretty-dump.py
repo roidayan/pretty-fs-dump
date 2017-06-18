@@ -47,6 +47,9 @@ class FlowTable(Flow):
 
 
 class FlowTableEntry(Flow):
+    def get_mask(self, key):
+        return self.group[key] or '0x0'
+
     @property
     def group(self):
         try:
@@ -69,8 +72,8 @@ class FlowTableEntry(Flow):
         def get_ip(k):
             self._ignore.append(k)
             ip = self[k]
-            ip_mask = self.group[k]
-            if ip_mask:
+            ip_mask = self.get_mask(k)
+            if ip_mask != '0x0':
                 ip = int2ip(int(ip, 0))
                 if ip_mask != '0xffffffff':
                     ip += '/' + int2ip(int(ip_mask, 0))
@@ -83,7 +86,7 @@ class FlowTableEntry(Flow):
 
         try:
             ip_proto = str(int(self['outer_headers.ip_protocol'], 0))
-            ip_proto_mask = self.group['outer_headers.ip_protocol']
+            ip_proto_mask = self.get_mask('outer_headers.ip_protocol')
             if ip_proto_mask != '0xff':
                 ip_proto += '/' + ip_proto_mask
             self._ignore.append('outer_headers.ip_protocol')
@@ -108,7 +111,7 @@ class FlowTableEntry(Flow):
         def get_port(k):
             try:
                 port = str(int(self[k], 0))
-                port_mask = self.group[k]
+                port_mask = self.get_mask(k)
                 self._ignore.append(k)
                 if port_mask != '0xffff':
                     port += '/' + port_mask
@@ -146,7 +149,7 @@ class FlowTableEntry(Flow):
             mac2 = high
 
             if mac2:
-                mac2 = mac2[2:]
+                mac2 = mac2[2:].zfill(8)
             else:
                 mac2 = '00000000'
 
@@ -155,10 +158,10 @@ class FlowTableEntry(Flow):
             return mac
 
         def get_mac(low, high):
-            if not self.group[low] and not self.group[high]:
-                return
             mac = get_mac_helper(self[low], self[high])
-            mac_mask = get_mac_helper(self.group[low], self.group[high])
+            mac_mask = get_mac_helper(self.get_mask(low), self.get_mask(high))
+            if mac_mask == '00:00:00:00:00:00':
+                return
             if mac_mask != 'ff:ff:ff:ff:ff:ff':
                 mac += '/' + mac_mask
             self._ignore.append(low)
