@@ -14,6 +14,14 @@ FDB_UPLINK_VPORT = '0xffff'
 # table type
 FT_ESW_FDB = '0x4'
 
+# actions
+FT_ACTION_ALLOW   = 1 << 0
+FT_ACTION_DROP    = 1 << 1
+FT_ACTION_FWD     = 1 << 2
+FT_ACTION_COUNT   = 1 << 3
+FT_ACTION_ENCAP   = 1 << 4
+FT_ACTION_DECAP   = 1 << 5
+
 
 class Flow():
     def __init__(self, attr):
@@ -88,6 +96,25 @@ class FlowTableEntry(Flow):
         self._ignore.append('misc_parameters.source_port')
         return 'in_port(%s)' % self['misc_parameters.source_port']
 
+    @property
+    def action(self):
+        self._ignore.append('action')
+        act = int(self['action'], 16)
+        act &= ~FT_ACTION_COUNT
+        act1 = ''
+
+        if act & FT_ACTION_DROP:
+            act &= ~FT_ACTION_DROP
+            act1 += ',drop'
+        if act & FT_ACTION_FWD:
+            act &= ~FT_ACTION_FWD
+            act1 = ',fwd' # TODO dst port
+        if act:
+            print 'ERROR: unknown action %s' % act
+
+        act1 = act1.lstrip(',')
+        return ' action:%s' % act1
+
     def __str__(self):
         x = []
         a = self.attrs
@@ -100,11 +127,13 @@ class FlowTableEntry(Flow):
             'valid',
             'flow_counter_list_size', # TODO: get counter
             'flow_counter[0].flow_counter_id',
+            'flow_counter[1].flow_counter_id',
         ]
 
         x.append(self.in_port)
         x.append(self.mac)
         x.append(self.ethertype)
+        x.append(self.action)
 
         # find unmatches attrs
         for i in self._ignore:
