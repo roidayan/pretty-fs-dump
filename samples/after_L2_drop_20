@@ -1,0 +1,1016 @@
+============================================
+Inputs: Type=FT	No Zero=1	Gvmi=0x0	
+============================================
+
+
+- FT :gvmi=0x0,table_id=9 -
+log_size                                                                        :0x2
+level                                                                           :0x12
+table_miss_mode                                                                 :0x1
+table_miss_id                                                                   :0x7
+
+
+- FT :gvmi=0x0,table_id=8 -
+log_size                                                                        :0x9
+level                                                                           :0x1
+table_type                                                                      :0x4
+
+
+- FT :gvmi=0x0,table_id=1048576 -
+log_size                                                                        :0x12
+table_type                                                                      :0x4
+table_miss_mode                                                                 :0x1
+table_miss_id                                                                   :0x8
+encap_en                                                                        :0x1
+decap_en                                                                        :0x1
+
+
+- FT :gvmi=0x0,table_id=7 -
+log_size                                                                        :0xd
+level                                                                           :0x1f
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=6 -
+log_size                                                                        :0x10
+level                                                                           :0x20
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=5 -
+log_size                                                                        :0x4
+level                                                                           :0x21
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=4 -
+log_size                                                                        :0xd
+level                                                                           :0x22
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=3 -
+log_size                                                                        :0xd
+level                                                                           :0x22
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=2 -
+log_size                                                                        :0xd
+level                                                                           :0x22
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=1 -
+log_size                                                                        :0xd
+level                                                                           :0x22
+table_miss_mode                                                                 :0x1
+
+
+- FT :gvmi=0x0,table_id=0 -
+level                                                                           :0x24
+
+
+- FG :gvmi=0x0,table_id=9,group_id=0x2 -
+end_flow_index                                                                  :0x00000003
+match_criteria_enable                                                           :0x2
+misc_parameters.source_port                                                     :0xffff
+
+
+- FG :gvmi=0x0,table_id=8,group_id=0x0 -
+end_flow_index                                                                  :0x00000102
+match_criteria_enable                                                           :0x2
+misc_parameters.source_sqn                                                      :0xffffff
+misc_parameters.source_port                                                     :0xffff
+
+
+- FG :gvmi=0x0,table_id=8,group_id=0x1 -
+start_flow_index                                                                :0x00000103
+end_flow_index                                                                  :0x00000104
+
+
+- FG :gvmi=0x0,table_id=1048576,group_id=0x14 -
+end_flow_index                                                                  :0x0000cccb
+match_criteria_enable                                                           :0x3
+outer_headers.smac_47_16                                                        :0xffffffff
+outer_headers.ethertype                                                         :0xffff
+outer_headers.smac_15_0                                                         :0xffff
+outer_headers.dmac_47_16                                                        :0xffffffff
+outer_headers.dmac_15_0                                                         :0xffff
+misc_parameters.source_port                                                     :0xffff
+
+
+- FG :gvmi=0x0,table_id=7,group_id=0x11 -
+end_flow_index                                                                  :0x00000fff
+match_criteria_enable                                                           :0x1
+outer_headers.first_vid                                                         :0xfff
+outer_headers.cvlan_tag                                                         :0x1
+
+
+- FG :gvmi=0x0,table_id=7,group_id=0x12 -
+start_flow_index                                                                :0x00001000
+end_flow_index                                                                  :0x00001001
+match_criteria_enable                                                           :0x1
+outer_headers.cvlan_tag                                                         :0x1
+
+
+- FG :gvmi=0x0,table_id=7,group_id=0x13 -
+start_flow_index                                                                :0x00001002
+end_flow_index                                                                  :0x00001002
+match_criteria_enable                                                           :0x1
+outer_headers.svlan_tag                                                         :0x1
+
+
+- FG :gvmi=0x0,table_id=6,group_id=0xe -
+
+
+- FG :gvmi=0x0,table_id=6,group_id=0xf -
+start_flow_index                                                                :0x00000001
+end_flow_index                                                                  :0x00008000
+match_criteria_enable                                                           :0x1
+outer_headers.dmac_47_16                                                        :0xffffffff
+outer_headers.dmac_15_0                                                         :0xffff
+
+
+- FG :gvmi=0x0,table_id=6,group_id=0x10 -
+start_flow_index                                                                :0x00008001
+end_flow_index                                                                  :0x00008001
+match_criteria_enable                                                           :0x1
+outer_headers.dmac_47_16                                                        :0x01000000
+
+
+- FG :gvmi=0x0,table_id=5,group_id=0xb -
+end_flow_index                                                                  :0x00000007
+match_criteria_enable                                                           :0x1
+outer_headers.ethertype                                                         :0xffff
+outer_headers.ip_protocol                                                       :0xff
+
+
+- FG :gvmi=0x0,table_id=5,group_id=0xc -
+start_flow_index                                                                :0x00000008
+end_flow_index                                                                  :0x00000009
+match_criteria_enable                                                           :0x1
+outer_headers.ethertype                                                         :0xffff
+
+
+- FG :gvmi=0x0,table_id=5,group_id=0xd -
+start_flow_index                                                                :0x0000000a
+end_flow_index                                                                  :0x0000000a
+
+
+- FG :gvmi=0x0,table_id=4,group_id=0x9 -
+end_flow_index                                                                  :0x00000fff
+match_criteria_enable                                                           :0x1
+outer_headers.ethertype                                                         :0xffff
+outer_headers.udp_dport                                                         :0xffff
+outer_headers.udp_sport                                                         :0xffff
+outer_headers.src_ip_127_96                                                     :0xffffffff
+outer_headers.src_ip_95_64                                                      :0xffffffff
+outer_headers.src_ip_63_32                                                      :0xffffffff
+outer_headers.src_ip_31_0                                                       :0xffffffff
+outer_headers.dst_ip_127_96                                                     :0xffffffff
+outer_headers.dst_ip_95_64                                                      :0xffffffff
+outer_headers.dst_ip_63_32                                                      :0xffffffff
+outer_headers.dst_ip_31_0                                                       :0xffffffff
+
+
+- FG :gvmi=0x0,table_id=4,group_id=0xa -
+start_flow_index                                                                :0x00001000
+end_flow_index                                                                  :0x00001000
+
+
+- FG :gvmi=0x0,table_id=3,group_id=0x7 -
+end_flow_index                                                                  :0x00000fff
+match_criteria_enable                                                           :0x1
+outer_headers.ethertype                                                         :0xffff
+outer_headers.udp_dport                                                         :0xffff
+outer_headers.udp_sport                                                         :0xffff
+outer_headers.src_ip_31_0                                                       :0xffffffff
+outer_headers.dst_ip_31_0                                                       :0xffffffff
+
+
+- FG :gvmi=0x0,table_id=3,group_id=0x8 -
+start_flow_index                                                                :0x00001000
+end_flow_index                                                                  :0x00001000
+
+
+- FG :gvmi=0x0,table_id=2,group_id=0x5 -
+end_flow_index                                                                  :0x00000fff
+match_criteria_enable                                                           :0x1
+outer_headers.ethertype                                                         :0xffff
+outer_headers.tcp_dport                                                         :0xffff
+outer_headers.tcp_sport                                                         :0xffff
+outer_headers.src_ip_127_96                                                     :0xffffffff
+outer_headers.src_ip_95_64                                                      :0xffffffff
+outer_headers.src_ip_63_32                                                      :0xffffffff
+outer_headers.src_ip_31_0                                                       :0xffffffff
+outer_headers.dst_ip_127_96                                                     :0xffffffff
+outer_headers.dst_ip_95_64                                                      :0xffffffff
+outer_headers.dst_ip_63_32                                                      :0xffffffff
+outer_headers.dst_ip_31_0                                                       :0xffffffff
+
+
+- FG :gvmi=0x0,table_id=2,group_id=0x6 -
+start_flow_index                                                                :0x00001000
+end_flow_index                                                                  :0x00001000
+
+
+- FG :gvmi=0x0,table_id=1,group_id=0x3 -
+end_flow_index                                                                  :0x00000fff
+match_criteria_enable                                                           :0x1
+outer_headers.ethertype                                                         :0xffff
+outer_headers.tcp_dport                                                         :0xffff
+outer_headers.tcp_sport                                                         :0xffff
+outer_headers.src_ip_31_0                                                       :0xffffffff
+outer_headers.dst_ip_31_0                                                       :0xffffffff
+
+
+- FG :gvmi=0x0,table_id=1,group_id=0x4 -
+start_flow_index                                                                :0x00001000
+end_flow_index                                                                  :0x00001000
+
+
+- FTE :gvmi=0x0,table_id=9,flow_index=0x0 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000002
+destination_list_size                                                           :0x1
+misc_parameters.source_port                                                     :0x1
+destination[0].destination_id                                                   :0xb4
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=9,flow_index=0x1 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000002
+destination_list_size                                                           :0x1
+misc_parameters.source_port                                                     :0x2
+destination[0].destination_id                                                   :0xb8
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x0 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xba
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x1 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xbe
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x2 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xc2
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x3 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xc6
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x4 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xca
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x5 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xce
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x6 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xd2
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x7 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xd6
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x8 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xda
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x9 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xde
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0xa -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xe2
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0xb -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xe6
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0xc -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xea
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0xd -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xee
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0xe -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xf2
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0xf -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xf6
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x10 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xfa
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x11 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0xfe
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x12 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x102
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x13 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x106
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x14 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x10a
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x15 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x10e
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x16 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x112
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x17 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x116
+destination[0].destination_id                                                   :0xffff
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x18 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x11a
+destination[0].destination_id                                                   :0x1
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x19 -
+action                                                                          :0x4
+valid                                                                           :0x1
+destination_list_size                                                           :0x1
+misc_parameters.source_sqn                                                      :0x11e
+destination[0].destination_id                                                   :0x2
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=8,flow_index=0x103 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000001
+destination_list_size                                                           :0x1
+destination[0].destination_type                                                 :VPORT (0x0)
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x0 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.dmac_47_16                                                        :0xe4113300
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x30
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x1 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x1
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x1
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x31
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x2 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x2
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x2
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x32
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x3 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x3
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x3
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x33
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x4 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x4
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x4
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x34
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x5 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x5
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x5
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x35
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x6 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x6
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x6
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x36
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x7 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x7
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x7
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x37
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x8 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x8
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x8
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x38
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x9 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x9
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x9
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x39
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0xa -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x10
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x10
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x3a
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0xb -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x11
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x11
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x3b
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0xc -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x12
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x12
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x3c
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0xd -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x13
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x13
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x3d
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0xe -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x14
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x14
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x3e
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0xf -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x15
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x15
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x3f
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x10 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x16
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x16
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x40
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x11 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x17
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x17
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x41
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x12 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x18
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x18
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x42
+
+
+- FTE :gvmi=0x0,table_id=1048576,flow_index=0x13 -
+action                                                                          :0xa
+valid                                                                           :0x1
+group_id                                                                        :0x00000014
+flow_counter_list_size                                                          :0x1
+outer_headers.smac_47_16                                                        :0xe4112200
+outer_headers.ethertype                                                         :0x800
+outer_headers.smac_15_0                                                         :0x19
+outer_headers.dmac_47_16                                                        :0xe4113300
+outer_headers.dmac_15_0                                                         :0x19
+misc_parameters.source_port                                                     :0xffff
+flow_counter[0].flow_counter_id                                                 :0x43
+
+
+- FTE :gvmi=0x0,table_id=7,flow_index=0x1000 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000012
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x6
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=7,flow_index=0x1001 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000012
+destination_list_size                                                           :0x1
+outer_headers.cvlan_tag                                                         :0x1
+destination[0].destination_id                                                   :0x6
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=7,flow_index=0x1002 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000013
+destination_list_size                                                           :0x1
+outer_headers.svlan_tag                                                         :0x1
+destination[0].destination_id                                                   :0x6
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=6,flow_index=0x0 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000e
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x5
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=6,flow_index=0x1 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000f
+destination_list_size                                                           :0x1
+outer_headers.dmac_47_16                                                        :0xffffffff
+outer_headers.dmac_15_0                                                         :0xffff
+destination[0].destination_id                                                   :0x5
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=6,flow_index=0x2 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000f
+destination_list_size                                                           :0x1
+outer_headers.dmac_47_16                                                        :0x248a079a
+outer_headers.dmac_15_0                                                         :0x179a
+destination[0].destination_id                                                   :0x5
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=6,flow_index=0x3 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000f
+destination_list_size                                                           :0x1
+outer_headers.dmac_47_16                                                        :0x01005e00
+outer_headers.dmac_15_0                                                         :0x1
+destination[0].destination_id                                                   :0x5
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=6,flow_index=0x4 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000f
+destination_list_size                                                           :0x1
+outer_headers.dmac_47_16                                                        :0x33330000
+outer_headers.dmac_15_0                                                         :0x1
+destination[0].destination_id                                                   :0x5
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=6,flow_index=0x5 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000f
+destination_list_size                                                           :0x1
+outer_headers.dmac_47_16                                                        :0x3333ff9a
+outer_headers.dmac_15_0                                                         :0x179a
+destination[0].destination_id                                                   :0x5
+destination[0].destination_type                                                 :FLOW_TABLE_ (0x1)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x0 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x800
+outer_headers.ip_protocol                                                       :0x6
+destination[0].destination_id                                                   :0x89
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x1 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x86dd
+outer_headers.ip_protocol                                                       :0x6
+destination[0].destination_id                                                   :0x8a
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x2 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x800
+outer_headers.ip_protocol                                                       :0x11
+destination[0].destination_id                                                   :0x8b
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x3 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x86dd
+outer_headers.ip_protocol                                                       :0x11
+destination[0].destination_id                                                   :0x8c
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x4 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x800
+outer_headers.ip_protocol                                                       :0x33
+destination[0].destination_id                                                   :0x8d
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x5 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x86dd
+outer_headers.ip_protocol                                                       :0x33
+destination[0].destination_id                                                   :0x8e
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x6 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x800
+outer_headers.ip_protocol                                                       :0x32
+destination[0].destination_id                                                   :0x8f
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x7 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000b
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x86dd
+outer_headers.ip_protocol                                                       :0x32
+destination[0].destination_id                                                   :0x90
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x8 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000c
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x800
+destination[0].destination_id                                                   :0x91
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0x9 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000c
+destination_list_size                                                           :0x1
+outer_headers.ethertype                                                         :0x86dd
+destination[0].destination_id                                                   :0x92
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=5,flow_index=0xa -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000d
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x93
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=4,flow_index=0x1000 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x0000000a
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x8c
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=3,flow_index=0x1000 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000008
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x8b
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=2,flow_index=0x1000 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000006
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x8a
+destination[0].destination_type                                                 :TIR (0x2)
+
+
+- FTE :gvmi=0x0,table_id=1,flow_index=0x1000 -
+action                                                                          :0x4
+valid                                                                           :0x1
+group_id                                                                        :0x00000004
+destination_list_size                                                           :0x1
+destination[0].destination_id                                                   :0x89
+destination[0].destination_type                                                 :TIR (0x2)
