@@ -86,7 +86,7 @@ class FlowTableEntry(Flow):
         dst = get_ip('outer_headers.dst_ip_31_0')
 
         try:
-            ip_proto = self['outer_headers.ip_protocol']
+            ip_proto = str(int(self['outer_headers.ip_protocol'], 0))
             ip_proto_mask = self.get_mask('outer_headers.ip_protocol')
             if ip_proto_mask != '0xff':
                 ip_proto += '/' + ip_proto_mask
