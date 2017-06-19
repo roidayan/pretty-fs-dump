@@ -7,10 +7,11 @@ import socket
 import struct
 
 
+verbose = 0
+
 fts = {}
 fgs = {}
 ftes = []
-
 
 FDB_UPLINK_VPORT = '0xffff'
 
@@ -277,6 +278,9 @@ class FlowTableEntry(Flow):
             'flow_counter[1].flow_counter_id',
         ])
 
+        if verbose < 2:
+            return
+
         counter_id = self['flow_counter[0].flow_counter_id'] or self ['flow_counter[1].flow_counter_id']
         if not counter_id:
             return
@@ -373,10 +377,11 @@ def int2ip(addr):
 
 
 def parse_args():
-    
     parser = argparse.ArgumentParser()
     parser.add_argument('--sample', required=True,
                         help='Inpurt sample file')
+    parser.add_argument('--verbose', '-v', default=0, action='count',
+                        help='Increase verbosity')
     return parser.parse_args()
 
 
@@ -438,7 +443,9 @@ def dump_all_ftes():
 
 
 def main():
+    global verbose
     args = parse_args()
+    verbose = args.verbose
     parse_fs(args.sample)
     dump_all_ftes()
 
