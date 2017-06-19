@@ -226,7 +226,10 @@ class FlowTableEntry(Flow):
         """
         tunnel(tun_id=0x01,src=1.2.3.4,dst=1.2.3.4,tp_src=4789,tp_dst=4789,ttl=128)
         """
-        # inner_headers.dmac_47_16, misc_parameters.vxlan_vni, inner_headers.dmac_15_0, inner_headers.ethertype, inner_headers.smac_47_16, inner_headers.smac_15_0
+
+        if not self.is_vxlan:
+            return
+
         items = []
 
         def get(t, k, size):
