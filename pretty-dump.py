@@ -267,6 +267,20 @@ class FlowTableEntry(Flow):
         return 'in_port(%s)' % self['misc_parameters.source_port']
 
     @property
+    def counter(self):
+        self._ignore.extend([
+            'flow_counter_list_size',
+            'flow_counter[0].flow_counter_id',
+            'flow_counter[1].flow_counter_id',
+        ])
+
+        counter_id = self['flow_counter[0].flow_counter_id'] or self ['flow_counter[1].flow_counter_id']
+        if not counter_id:
+            return
+
+        return ' counter:%s' % counter_id
+
+    @property
     def action(self):
         self._ignore.append('action')
         act = int(self['action'], 16)
@@ -316,9 +330,6 @@ class FlowTableEntry(Flow):
             'flow_index',
             'gvmi',
             'valid',
-            'flow_counter_list_size', # TODO: get counter
-            'flow_counter[0].flow_counter_id',
-            'flow_counter[1].flow_counter_id',
         ]
 
         self.set_headers('outer')
@@ -337,6 +348,8 @@ class FlowTableEntry(Flow):
             x.append('encap(' + ','.join(y) + ')')
         else:
             x.extend(y)
+
+        x.append(self.counter)
         x.append(self.action)
 
         # find unmatches attrs
