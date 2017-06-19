@@ -6,6 +6,12 @@ import argparse
 import socket
 import struct
 
+try:
+    from termcolor import colored
+    use_color = True
+except ImportError:
+    use_color = False
+
 __authors__ = ['Roi Dayan', 'Shahar Klein', 'Paul Blakey']
 
 verbose = 0
@@ -381,7 +387,26 @@ class FlowTableEntry(Flow):
 
         x = list(filter(None, x))
 
-        return ','.join(x)
+        out = ','.join(x)
+
+        ccc = {
+            'in_port': 'yellow',
+            'eth': 'blue',
+            'eth_type': 'blue',
+            'ipv4': 'green',
+            'udp': 'magenta',
+            'tcp': 'magenta',
+            'action': 'red',
+            'src': 'cyan',
+            'dst': 'cyan',
+        }
+
+        if use_color:
+            for word in ccc:
+                word2 = colored(word, ccc[word])
+                out = re.sub(r'\b(%s)\b' % word, word2, out)
+
+        return out
 
 
 def int2ip(addr):
@@ -391,9 +416,11 @@ def int2ip(addr):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--sample', required=True,
-                        help='Inpurt sample file')
+                        help='Input sample file')
     parser.add_argument('--verbose', '-v', default=0, action='count',
                         help='Increase verbosity')
+    parser.add_argument('--color', '-c', action='store_true',
+                        help='Color output')
     return parser.parse_args()
 
 
@@ -455,11 +482,16 @@ def dump_all_ftes():
 
 
 def main():
-    global verbose
+    global verbose, use_color
     args = parse_args()
+    if not (args.color and use_color):
+        use_color = False
+    if not sys.stdout.isatty():
+        use_color = False
     verbose = args.verbose
     parse_fs(args.sample)
     dump_all_ftes()
+
 
 if __name__ == "__main__":
     main()
