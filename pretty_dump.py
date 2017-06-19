@@ -6,6 +6,7 @@ import argparse
 import socket
 import struct
 
+__authors__ = ['Roi Dayan', 'Shahar Klein', 'Paul Blakey']
 
 verbose = 0
 
