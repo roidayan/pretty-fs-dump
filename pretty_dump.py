@@ -266,10 +266,21 @@ class FlowTableEntry(Flow):
 
         return 'tunnel(%s)' % ','.join(items)
 
+    def port_name(self, port):
+        if verbose < 1:
+            return port
+
+        if port.lower() == FDB_UPLINK_VPORT.lower():
+            port = 'uplink'
+        else:
+            port = 'vport%s' % int(port, 0)
+        return port
+
     @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
-        return 'in_port(%s)' % self['misc_parameters.source_port']
+        port = self['misc_parameters.source_port']
+        return 'in_port(%s)' % self.port_name(port)
 
     @property
     def counter(self):
@@ -316,7 +327,7 @@ class FlowTableEntry(Flow):
                 if dst_type.split()[0] != 'VPORT':
                     print 'ERROR: unsupported dst type %s' % dst_type
                     continue
-                act1.append(dst_id)
+                act1.append(self.port_name(dst_id))
         if act:
             print 'ERROR: unknown action %s' % act
 
