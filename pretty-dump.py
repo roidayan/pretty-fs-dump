@@ -377,9 +377,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    args = parse_args()
-
+def parse_fs(sample):
     # - FG :gvmi=0x0,table_id=8,group_id=0x0 -
     group_re = re.compile('\s*- ([\w]+) :([\w,=]+)')
     group_keys_re = re.compile('(?:(\w+)=(\w+)),?')
@@ -391,7 +389,7 @@ def main():
     # destination[0].destination_id                                                   :0x89
     # destination[0].destination_type                                                 :TIR (0x2)
 
-    with open(args.sample, 'r') as f:
+    with open(sample, 'r') as f:
         data = f.read().split("\n\n")
 
     # parse data
@@ -425,7 +423,8 @@ def main():
         else:
             print 'ERROR: unknown type %s' % group
 
-    # dump
+
+def dump_all_ftes():
     for fte in ftes:
         if len(fte['table_id']) < 4:
             # TODO: we currently only want the rules we add from ovss
@@ -434,6 +433,11 @@ def main():
 
         print fte
 
+
+def main():
+    args = parse_args()
+    parse_fs(args.sample)
+    dump_all_ftes()
 
 if __name__ == "__main__":
     main()
