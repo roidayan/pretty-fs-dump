@@ -60,8 +60,9 @@ class FlowTableEntry(Flow):
 
     @property
     def ethertype(self):
-        self._ignore.append('outer_headers.ethertype')
-        eth_type = '0x' + self['outer_headers.ethertype'][2:].zfill(4)
+        k = '%s.ethertype' % self.get_headers()
+        self._ignore.append(k)
+        eth_type = '0x' + self[k][2:].zfill(4)
         # TODO: in verbose print tcp,udp,arp,etc
         return 'eth_type(%s)' % eth_type
 
@@ -105,27 +106,26 @@ class FlowTableEntry(Flow):
 
         return 'ipv4(%s)' % ','.join(items)
 
+    def get_port(self, k):
+        try:
+            port = str(int(self[k], 0))
+            port_mask = self.get_mask(k)
+            self._ignore.append(k)
+            if port_mask != '0xffff':
+                port += '/' + port_mask
+            return port
+        except TypeError:
+            return
+
     @property
     def ports(self):
-
-        def get_port(k):
-            try:
-                port = str(int(self[k], 0))
-                port_mask = self.get_mask(k)
-                self._ignore.append(k)
-                if port_mask != '0xffff':
-                    port += '/' + port_mask
-                return port
-            except TypeError:
-                return
-
         out = ''
         for p in ['udp', 'tcp']:
             items = []
-            sport = get_port('outer_headers.%s_sport' % p)
+            sport = self.get_port('%s.%s_sport' % (self.get_headers(), p))
             if sport:
                 items.append('src=%s' % sport)
-            dport = get_port('outer_headers.%s_dport' % p)
+            dport = self.get_port('%s.%s_dport' % (self.get_headers(), p))
             if dport:
                 items.append('dst=%s' % dport)
             if not items:
@@ -158,6 +158,8 @@ class FlowTableEntry(Flow):
             return mac
 
         def get_mac(low, high):
+            low = self.get_headers() + '.' + low
+            high = self.get_headers() + '.' + high
             mac = get_mac_helper(self[low], self[high])
             mac_mask = get_mac_helper(self.get_mask(low), self.get_mask(high))
             if mac_mask == '00:00:00:00:00:00':
@@ -168,8 +170,8 @@ class FlowTableEntry(Flow):
             self._ignore.append(high)
             return mac
 
-        smac = get_mac('outer_headers.smac_15_0', 'outer_headers.smac_47_16')
-        dmac = get_mac('outer_headers.dmac_15_0', 'outer_headers.dmac_47_16')
+        smac = get_mac('smac_15_0', 'smac_47_16')
+        dmac = get_mac('dmac_15_0', 'dmac_47_16')
 
         if smac:
             items.append('src='+smac)
@@ -216,6 +218,50 @@ class FlowTableEntry(Flow):
         return 'vlan(vid=%s,pcp=%s)' % (v, p)
 
     @property
+    def is_vxlan(self):
+        return self['misc_parameters.vxlan_vni'] is not None
+
+    @property
+    def vxlan(self):
+        """
+        tunnel(tun_id=0x01,src=1.2.3.4,dst=1.2.3.4,tp_src=4789,tp_dst=4789,ttl=128)
+        """
+        # inner_headers.dmac_47_16, misc_parameters.vxlan_vni, inner_headers.dmac_15_0, inner_headers.ethertype, inner_headers.smac_47_16, inner_headers.smac_15_0
+        items = []
+
+        def get(t, k, size):
+            v = self[k]
+            m = self.get_mask(k)
+            if m != '0x0' and m[2:] != 'f' * size * 2:
+                v += '/' + m
+            if v:
+                v = t + '=' + v
+            self._ignore.append(k)
+            return v
+
+        vni = get('tun_id', 'misc_parameters.vxlan_vni', 3)
+        items.append(vni)
+
+        # ignore outer macs
+        self.mac
+        # no need to show outer ethertype for tunnel.
+        self.ethertype
+
+        sport = self.get_port('outer_headers.udp_sport')
+        if sport:
+            items.append('tp_src=%s' % sport)
+        dport = self.get_port('outer_headers.udp_dport')
+        if dport:
+            items.append('tp_dst=%s' % dport)
+
+        items = list(filter(None, items))
+
+        if not items:
+            return
+
+        return 'tunnel(%s)' % ','.join(items)
+
+    @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
         return 'in_port(%s)' % self['misc_parameters.source_port']
@@ -229,6 +275,11 @@ class FlowTableEntry(Flow):
 
         if self.is_vlan:
             act1.append('pop_vlan')
+        if act & FT_ACTION_ENCAP:
+            act &= ~FT_ACTION_ENCAP
+            act1.append('set(tunnel())')
+        if act & FT_ACTION_DECAP:
+            act &= ~FT_ACTION_DECAP
         if act & FT_ACTION_DROP:
             act &= ~FT_ACTION_DROP
             act1.append('drop')
@@ -249,6 +300,12 @@ class FlowTableEntry(Flow):
 
         return ' action:%s' % ','.join(act1)
 
+    def get_headers(self):
+        return '%s_headers' % self._headers
+
+    def set_headers(self, val):
+        self._headers = val
+
     def __str__(self):
         x = []
         a = self.attrs
@@ -264,6 +321,10 @@ class FlowTableEntry(Flow):
             'flow_counter[1].flow_counter_id',
         ]
 
+        self.set_headers('outer')
+        x.append(self.vxlan)
+        if self.is_vxlan:
+            self.set_headers('inner')
         x.append(self.in_port)
         x.append(self.mac)
         x.append(self.vlan)
