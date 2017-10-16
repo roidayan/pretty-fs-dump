@@ -90,15 +90,15 @@ class FlowTableEntry(Flow):
             else:
                 return None
 
-        src = get_ip('outer_headers.src_ip_31_0')
-        dst = get_ip('outer_headers.dst_ip_31_0')
+        src = get_ip(self.get_headers() + '.src_ip_31_0')
+        dst = get_ip(self.get_headers() + '.dst_ip_31_0')
 
         try:
-            ip_proto = str(int(self['outer_headers.ip_protocol'], 0))
-            ip_proto_mask = self.get_mask('outer_headers.ip_protocol')
+            ip_proto = str(int(self[self.get_headers() + '.ip_protocol'], 0))
+            ip_proto_mask = self.get_mask(self.get_headers() + '.ip_protocol')
             if ip_proto_mask != '0xff':
                 ip_proto += '/' + ip_proto_mask
-            self._ignore.append('outer_headers.ip_protocol')
+            self._ignore.append(self.get_headers() + '.ip_protocol')
         except TypeError:
             ip_proto = None
 
@@ -253,8 +253,8 @@ class FlowTableEntry(Flow):
         vni = get('tun_id', 'misc_parameters.vxlan_vni', 3)
         items.append(vni)
 
-        # ignore outer macs
-        self.mac
+        items.append(self.mac)
+        items.append(self.ipv4)
         # no need to show outer ethertype for tunnel.
         self.ethertype
 
