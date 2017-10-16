@@ -299,7 +299,8 @@ class FlowTableEntry(Flow):
         if verbose < 2:
             return
 
-        counter_id = self['flow_counter[0].flow_counter_id'] or self ['flow_counter[1].flow_counter_id']
+        counter_id = (self['flow_counter[0].flow_counter_id'] or
+                      self['flow_counter[1].flow_counter_id'])
         if not counter_id:
             return
 
