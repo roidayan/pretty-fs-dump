@@ -416,11 +416,11 @@ def int2ip(addr):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--sample', required=True,
+    parser.add_argument('-s', '--sample', required=True,
                         help='Input sample file')
-    parser.add_argument('--verbose', '-v', default=0, action='count',
+    parser.add_argument('-v', '--verbose', default=0, action='count',
                         help='Increase verbosity')
-    parser.add_argument('--color', '-c', action='store_true',
+    parser.add_argument('-c', '--color', action='store_true',
                         help='Color output')
     return parser.parse_args()
 
