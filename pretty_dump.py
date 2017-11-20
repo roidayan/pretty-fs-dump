@@ -69,8 +69,11 @@ class FlowTableEntry(Flow):
     @property
     def ethertype(self):
         k = '%s.ethertype' % self.get_headers()
+        ethertype = self[k]
+        if not ethertype:
+            return ''
         self._ignore.append(k)
-        eth_type = '0x' + self[k][2:].zfill(4)
+        eth_type = '0x' + ethertype[2:].zfill(4)
         # TODO: in verbose print tcp,udp,arp,etc
         return 'eth_type(%s)' % eth_type
 
@@ -203,7 +206,10 @@ class FlowTableEntry(Flow):
         self._ignore.append('outer_headers.cvlan_tag')
 
         def get_vlan():
-            vlan_id = str(int(self['outer_headers.first_vid'], 0))
+            vid = self['outer_headers.first_vid']
+            if not vid:
+                return
+            vlan_id = str(int(vid, 0))
             vlan_mask = self.get_mask('outer_headers.first_vid')
             if vlan_mask != '0xfff':
                 vlan_id += '/' + vlan_mask
@@ -276,6 +282,9 @@ class FlowTableEntry(Flow):
         if verbose < 1:
             return port
 
+        if not port:
+            return 'PortNone'
+
         if port.lower() == FDB_UPLINK_VPORT.lower():
             port = 'uplink'
         else:
@@ -286,6 +295,8 @@ class FlowTableEntry(Flow):
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
         port = self['misc_parameters.source_port']
+        if not port:
+            return ''
         return 'in_port(%s)' % self.port_name(port)
 
     @property
@@ -331,10 +342,10 @@ class FlowTableEntry(Flow):
             for i in range(int(self['destination_list_size'], 0)):
                 self._ignore.append('destination[%d].destination_id' % i)
                 self._ignore.append('destination[%d].destination_type' % i)
-                dst_id = self['destination[%d].destination_id' % i]
+                dst_id = self['destination[%d].destination_id' % i] or '0x0'
                 dst_type = self['destination[%d].destination_type' % i]
                 if dst_type.split()[0] != 'VPORT':
-                    print 'ERROR: unsupported dst type %s' % dst_type
+                    print 'ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id)
                     continue
                 act1.append(self.port_name(dst_id))
         if act:
