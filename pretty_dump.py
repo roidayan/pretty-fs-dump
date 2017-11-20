@@ -475,8 +475,8 @@ def parse_fs(sample):
 def dump_all_ftes():
     for fte in ftes:
         if len(fte['table_id']) < 4:
-            # TODO: we currently only want the rules we add from ovss
-            # we create new fdb table which gets a high id number.
+            # TODO: we currently only want the rules we add from userspace
+            # ovs/tc. we create new fdb table which gets a high id number.
             continue
 
         print fte
