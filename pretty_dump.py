@@ -317,7 +317,9 @@ class FlowTableEntry(Flow):
             act1.append('pop_vlan')
         if act & FT_ACTION_ENCAP:
             act &= ~FT_ACTION_ENCAP
-            act1.append('set(tunnel())')
+            self._ignore.append('encap_id')
+            encap_id = self['encap_id'] or '0x0'
+            act1.append('set(tunnel(encap_id=%s))' % encap_id)
         if act & FT_ACTION_DECAP:
             act &= ~FT_ACTION_DECAP
         if act & FT_ACTION_DROP:
