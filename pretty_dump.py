@@ -445,6 +445,8 @@ def parse_args():
                         help='Increase verbosity')
     parser.add_argument('-c', '--color', action='store_true',
                         help='Color output')
+    parser.add_argument('-n', '--network', action='store_true', default=False,
+                        help='Use network prefix instead of netmask')
     return parser.parse_args()
 
 
@@ -510,12 +512,17 @@ def dump_all_ftes():
 
 
 def main():
-    global verbose, use_color
+    global verbose, use_color, NETADDR
+
     args = parse_args()
+
     if not (args.color and use_color):
         use_color = False
+    if not (args.network and NETADDR):
+        NETADDR = False
     if not sys.stdout.isatty():
         use_color = False
+
     verbose = args.verbose
     parse_fs(args.sample)
     dump_all_ftes()
