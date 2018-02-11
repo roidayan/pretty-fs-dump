@@ -12,6 +12,12 @@ try:
 except ImportError:
     use_color = False
 
+try:
+    from netaddr import IPNetwork
+    NETADDR = True
+except ImportError:
+    NETADDR = False
+
 __authors__ = ['Roi Dayan', 'Shahar Klein', 'Paul Blakey']
 
 verbose = 0
@@ -91,6 +97,8 @@ class FlowTableEntry(Flow):
                 ip = int2ip(int(ip, 0))
                 if ip_mask != '0xffffffff':
                     ip += '/' + int2ip(int(ip_mask, 0))
+                if NETADDR:
+                    ip = str(IPNetwork(ip))
                 return ip
             else:
                 return None
