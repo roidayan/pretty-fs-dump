@@ -494,7 +494,11 @@ def dump_all_ftes():
             # ovs/tc. we create new fdb table which gets a high id number.
             continue
 
-        print fte
+        try:
+            print fte
+        except Exception:
+            print fte.attrs
+            raise
 
 
 def main():
