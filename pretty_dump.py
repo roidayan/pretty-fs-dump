@@ -85,6 +85,8 @@ class FlowTableEntry(Flow):
             self._ignore.append(k)
             ip = self[k]
             ip_mask = self.get_mask(k)
+            if not ip:
+                ip = '0'
             if ip_mask != '0x0':
                 ip = int2ip(int(ip, 0))
                 if ip_mask != '0xffffffff':
