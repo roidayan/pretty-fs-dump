@@ -122,6 +122,15 @@ class FlowTableEntry(Flow):
         if ip_proto:
             items.append('proto=%s' % ip_proto)
 
+        frag_mask = self.get_mask(self.get_headers() + '.frag')
+        if frag_mask != '0x0':
+            frag = self[self.get_headers() + '.frag']
+            if frag:
+                items.append('frag=yes')
+            else:
+                items.append('frag=no')
+        self._ignore.append(self.get_headers() + '.frag')
+
         if not items:
             return
 
