@@ -315,7 +315,10 @@ class FlowTableEntry(Flow):
         self._ignore.append('misc_parameters.source_port')
         port = self['misc_parameters.source_port']
         if not port:
-            return ''
+            if self.group['misc_parameters.source_port']:
+                port = '0'
+            else:
+                return ''
         return 'in_port(%s)' % self.port_name(port)
 
     @property
