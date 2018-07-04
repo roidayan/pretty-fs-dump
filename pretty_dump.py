@@ -404,6 +404,28 @@ class FlowTableEntry(Flow):
     def set_headers(self, val):
         self._headers = val
 
+    def colorize(self, out):
+        ccc = {
+            'esw': 'green',
+            'tunnel': 'blue',
+            'in_port': 'yellow',
+            'eth': 'blue',
+            'eth_type': 'blue',
+            'ipv4': 'green',
+            'udp': 'magenta',
+            'tcp': 'magenta',
+            'action': 'red',
+            'src': 'cyan',
+            'dst': 'cyan',
+        }
+
+        if use_color:
+            for word in ccc:
+                word2 = colored(word, ccc[word])
+                out = re.sub(r'\b(%s)\b' % word, word2, out)
+
+        return out
+
     def __str__(self):
         x = []
         a = self.attrs
@@ -454,24 +476,8 @@ class FlowTableEntry(Flow):
 
         out = ','.join(x)
 
-        ccc = {
-            'esw': 'green',
-            'tunnel': 'blue',
-            'in_port': 'yellow',
-            'eth': 'blue',
-            'eth_type': 'blue',
-            'ipv4': 'green',
-            'udp': 'magenta',
-            'tcp': 'magenta',
-            'action': 'red',
-            'src': 'cyan',
-            'dst': 'cyan',
-        }
-
         if use_color:
-            for word in ccc:
-                word2 = colored(word, ccc[word])
-                out = re.sub(r'\b(%s)\b' % word, word2, out)
+            out = self.colorize(out)
 
         return out
 
