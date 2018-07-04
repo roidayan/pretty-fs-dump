@@ -366,10 +366,16 @@ class FlowTableEntry(Flow):
                 self._ignore.append('destination[%d].destination_type' % i)
                 dst_id = self['destination[%d].destination_id' % i] or '0x0'
                 dst_type = self['destination[%d].destination_type' % i]
-                if dst_type.split()[0] != 'VPORT':
+                dst_type0 = dst_type.split()[0]
+                if dst_type0 == 'VPORT':
+                    act1.append(self.port_name(dst_id))
+                elif dst_type0 == 'TIR':
+                    act1.append('TIR(%s)' % dst_id)
+                elif dst_type0 == 'FLOW_TABLE_':
+                    act1.append('FLOW_TABLE(%s)' % dst_id)
+                else:
                     print 'ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id)
                     continue
-                act1.append(self.port_name(dst_id))
         if act:
             print 'ERROR: unknown action %s' % act
 
