@@ -417,6 +417,11 @@ class FlowTableEntry(Flow):
             x.extend(y)
 
         x.append(self.counter)
+
+        x = list(filter(None, x))
+        if not x:
+            x.append('[No Match]')
+
         x.append(self.action)
 
         # find unmatches attrs
