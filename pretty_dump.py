@@ -311,8 +311,21 @@ class FlowTableEntry(Flow):
         return port
 
     @property
+    def in_esw(self):
+        self._ignore.append('misc_parameters.src_esw_owner_vhca_id')
+        esw = self['misc_parameters.src_esw_owner_vhca_id']
+
+        if not esw:
+            return
+
+        return 'esw(%s)' % esw
+
+    @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
+        self._ignore.append('misc_parameters.src_esw_owner_vhca_id')
+        esw = self['misc_parameters.src_esw_owner_vhca_id']
+
         port = self['misc_parameters.source_port']
         if not port:
             if self.group['misc_parameters.source_port']:
@@ -364,9 +377,13 @@ class FlowTableEntry(Flow):
             for i in range(int(self['destination_list_size'], 0)):
                 self._ignore.append('destination[%d].destination_id' % i)
                 self._ignore.append('destination[%d].destination_type' % i)
+                self._ignore.append('destination[%d].dst_esw_owner_vhca_id' % i)
                 dst_id = self['destination[%d].destination_id' % i] or '0x0'
                 dst_type = self['destination[%d].destination_type' % i]
                 dst_type0 = dst_type.split()[0]
+                dst_esw_owner_vhca_id = self['destination[%d].dst_esw_owner_vhca_id' % i]
+                if dst_esw_owner_vhca_id:
+                    act1.append('esw(%s)' % dst_esw_owner_vhca_id)
                 if dst_type0 == 'VPORT':
                     act1.append(self.port_name(dst_id))
                 elif dst_type0 == 'TIR':
@@ -399,6 +416,7 @@ class FlowTableEntry(Flow):
             'valid',
         ]
 
+        x.append(self.in_esw)
         self.set_headers('outer')
         x.append(self.vxlan)
         if self.is_vxlan:
