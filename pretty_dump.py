@@ -323,8 +323,6 @@ class FlowTableEntry(Flow):
     @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
-        self._ignore.append('misc_parameters.src_esw_owner_vhca_id')
-        esw = self['misc_parameters.src_esw_owner_vhca_id']
 
         port = self['misc_parameters.source_port']
         if not port:
