@@ -455,6 +455,8 @@ class FlowTableEntry(Flow):
         out = ','.join(x)
 
         ccc = {
+            'esw': 'green',
+            'tunnel': 'blue',
             'in_port': 'yellow',
             'eth': 'blue',
             'eth_type': 'blue',
