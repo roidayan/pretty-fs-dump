@@ -61,6 +61,10 @@ class FlowTable(Flow):
 
 
 class FlowTableEntry(Flow):
+    @property
+    def table_id(self):
+        return int(self.attr['table_id'])
+
     def get_mask(self, key):
         return self.group[key] or '0x0'
 
@@ -549,8 +553,10 @@ def parse_fs(sample):
 
 
 def dump_all_ftes():
-    for fte in ftes:
-        if len(fte['table_id']) < 4:
+    _ftes = sorted(ftes, key = lambda r:r.table_id)
+
+    for fte in _ftes:
+        if fte.table_id < 1000:
             # TODO: we currently only want the rules we add from userspace
             # ovs/tc. we create new fdb table which gets a high id number.
             continue
