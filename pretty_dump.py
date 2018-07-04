@@ -314,9 +314,13 @@ class FlowTableEntry(Flow):
     def in_esw(self):
         self._ignore.append('misc_parameters.src_esw_owner_vhca_id')
         esw = self['misc_parameters.src_esw_owner_vhca_id']
+        esw_mask = self.get_mask('misc_parameters.src_esw_owner_vhca_id')
+
+        if esw_mask == '0x0':
+            return
 
         if not esw:
-            return
+            esw = '0x0'
 
         return 'esw(%s)' % esw
 
