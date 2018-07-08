@@ -65,7 +65,7 @@ class FlowTableEntry(Flow):
     def table_id(self):
         if verbose < 3:
             return
-        return 'table_id(%d)' % self.attr['table_id']
+        return 'table_id(0x%x)' % self.attr['table_id']
 
     def get_mask(self, key):
         return self.group[key] or '0x0'
