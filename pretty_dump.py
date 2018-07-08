@@ -140,7 +140,15 @@ class FlowTableEntry(Flow):
         if not items:
             return
 
-        return 'ipv4(%s)' % ','.join(items)
+        ip_ver = int(self[self.get_headers() + '.ip_version'], 0)
+        ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
+        self._ignore.append(self.get_headers() + '.ip_version')
+        if ip_ver_mask == '0xf' and ip_ver == 6:
+            ip_ver = 'ipv6(%s)'
+        else:
+            ip_ver = 'ipv4(%s)'
+
+        return ip_ver % ','.join(items)
 
     def get_port(self, k):
         try:
@@ -421,6 +429,7 @@ class FlowTableEntry(Flow):
             'eth': 'blue',
             'eth_type': 'blue',
             'ipv4': 'green',
+            'ipv6': 'green',
             'udp': 'magenta',
             'tcp': 'magenta',
             'action': 'red',
