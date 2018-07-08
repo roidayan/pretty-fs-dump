@@ -560,7 +560,7 @@ def dump_all_ftes():
     _ftes = sorted(ftes, key = lambda r:r['table_id'])
 
     for fte in _ftes:
-        if fte['table_id'] < 1000:
+        if fte['table_id'] < 1000 and verbose < 4:
             # TODO: we currently only want the rules we add from userspace
             # ovs/tc. we create new fdb table which gets a high id number.
             continue
