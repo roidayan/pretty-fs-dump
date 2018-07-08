@@ -63,7 +63,9 @@ class FlowTable(Flow):
 class FlowTableEntry(Flow):
     @property
     def table_id(self):
-        return int(self.attr['table_id'])
+        if verbose < 3:
+            return
+        return 'table_id(%d)' % self.attr['table_id']
 
     def get_mask(self, key):
         return self.group[key] or '0x0'
@@ -412,6 +414,7 @@ class FlowTableEntry(Flow):
 
     def colorize(self, out):
         ccc = {
+            'table_id': 'yellow',
             'esw': 'green',
             'tunnel': 'blue',
             'in_port': 'yellow',
@@ -444,6 +447,7 @@ class FlowTableEntry(Flow):
             'valid',
         ]
 
+        x.append(self.table_id)
         x.append(self.in_esw)
         self.set_headers('outer')
         x.append(self.vxlan)
@@ -538,6 +542,8 @@ def parse_fs(sample):
 
         if 'group_id' in attr:
             attr['group_id'] = int(attr['group_id'], 0)
+        if 'table_id' in attr:
+            attr['table_id'] = int(attr['table_id'], 0)
 
         if group == 'FG':
             fg = FlowGroup(attr)
@@ -553,10 +559,10 @@ def parse_fs(sample):
 
 
 def dump_all_ftes():
-    _ftes = sorted(ftes, key = lambda r:r.table_id)
+    _ftes = sorted(ftes, key = lambda r:r['table_id'])
 
     for fte in _ftes:
-        if fte.table_id < 1000:
+        if fte['table_id'] < 1000:
             # TODO: we currently only want the rules we add from userspace
             # ovs/tc. we create new fdb table which gets a high id number.
             continue
