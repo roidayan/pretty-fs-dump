@@ -436,7 +436,6 @@ class FlowTableEntry(Flow):
         return out
 
     def __str__(self):
-        x = []
         a = self.attrs
 
         self._ignore = [
@@ -447,6 +446,7 @@ class FlowTableEntry(Flow):
             'valid',
         ]
 
+        x = []
         x.append(self.table_id)
         x.append(self.in_esw)
         self.set_headers('outer')
@@ -460,18 +460,16 @@ class FlowTableEntry(Flow):
         y.append(self.ethertype)
         y.append(self.ipv4)
         y.append(self.ports)
+        y = list(filter(None, y))
         if self.is_vlan and y:
-            y = list(filter(None, y))
             x.append('encap(' + ','.join(y) + ')')
         else:
             x.extend(y)
 
         x.append(self.counter)
-
         x = list(filter(None, x))
         if not x:
             x.append('[No Match]')
-
         x.append(self.action)
 
         # find unmatches attrs
