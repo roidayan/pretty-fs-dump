@@ -313,7 +313,7 @@ class FlowTableEntry(Flow):
 
     def port_name(self, port):
         if verbose < 1:
-            return port
+            return 'vport(%s)' % port
 
         if not port:
             return 'PortNone'
@@ -424,6 +424,7 @@ class FlowTableEntry(Flow):
         ccc = {
             'table_id': 'yellow',
             'esw': 'green',
+            'vport': 'green',
             'tunnel': 'blue',
             'in_port': 'yellow',
             'eth': 'blue',
