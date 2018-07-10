@@ -140,12 +140,15 @@ class FlowTableEntry(Flow):
         if not items:
             return
 
-        ip_ver = int(self[self.get_headers() + '.ip_version'], 0)
-        ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
-        self._ignore.append(self.get_headers() + '.ip_version')
-        if ip_ver_mask == '0xf' and ip_ver == 6:
-            ip_ver = 'ipv6(%s)'
-        else:
+        try:
+            ip_ver = int(self[self.get_headers() + '.ip_version'], 0)
+            ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
+            self._ignore.append(self.get_headers() + '.ip_version')
+            if ip_ver_mask == '0xf' and ip_ver == 6:
+                ip_ver = 'ipv6(%s)'
+            else:
+                ip_ver = 'ipv4(%s)'
+        except TypeError:
             ip_ver = 'ipv4(%s)'
 
         return ip_ver % ','.join(items)
