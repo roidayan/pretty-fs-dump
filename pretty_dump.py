@@ -90,8 +90,11 @@ class FlowTable(Flow):
         act1 = []
 
         if self['table_miss_mode'] == '0x1':
-            dst_id = self['table_miss_id']
-            act1.append('FLOW_TABLE(%s)' % dst_id)
+            dst_id = self['table_miss_id'] or '0x0'
+        else:
+            dst_id = 'default_miss_table'
+
+        act1.append('FLOW_TABLE(%s)' % dst_id)
 
         return ' action:%s' % ','.join(act1)
 
