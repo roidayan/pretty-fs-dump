@@ -40,6 +40,34 @@ FT_ACTION_ENCAP   = 1 << 4
 FT_ACTION_DECAP   = 1 << 5
 
 
+def colorize(out):
+    if not use_color:
+        return out
+
+    ccc = {
+        'table_id': 'yellow',
+        'esw': 'green',
+        'vport': 'green',
+        'tunnel': 'blue',
+        'in_port': 'yellow',
+        'eth': 'blue',
+        'eth_type': 'blue',
+        'ipv4': 'green',
+        'ipv6': 'green',
+        'udp': 'magenta',
+        'tcp': 'magenta',
+        'action': 'red',
+        'src': 'cyan',
+        'dst': 'cyan',
+    }
+
+    for word in ccc:
+        word2 = colored(word, ccc[word])
+        out = re.sub(r'\b(%s)\b' % word, word2, out)
+
+    return out
+
+
 class Flow():
     def __init__(self, attr):
         self.attr = attr
@@ -423,31 +451,6 @@ class FlowTableEntry(Flow):
     def set_headers(self, val):
         self._headers = val
 
-    def colorize(self, out):
-        ccc = {
-            'table_id': 'yellow',
-            'esw': 'green',
-            'vport': 'green',
-            'tunnel': 'blue',
-            'in_port': 'yellow',
-            'eth': 'blue',
-            'eth_type': 'blue',
-            'ipv4': 'green',
-            'ipv6': 'green',
-            'udp': 'magenta',
-            'tcp': 'magenta',
-            'action': 'red',
-            'src': 'cyan',
-            'dst': 'cyan',
-        }
-
-        if use_color:
-            for word in ccc:
-                word2 = colored(word, ccc[word])
-                out = re.sub(r'\b(%s)\b' % word, word2, out)
-
-        return out
-
     def __str__(self):
         a = self.attrs
 
@@ -496,10 +499,7 @@ class FlowTableEntry(Flow):
         x = list(filter(None, x))
 
         out = ','.join(x)
-
-        if use_color:
-            out = self.colorize(out)
-
+        out = colorize(out)
         return out
 
 
