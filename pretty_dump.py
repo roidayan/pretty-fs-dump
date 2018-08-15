@@ -513,10 +513,10 @@ def parse_args():
                         help='Input sample file')
     parser.add_argument('-v', '--verbose', default=0, action='count',
                         help='Increase verbosity')
-    parser.add_argument('-c', '--color', action='store_true',
-                        help='Color output')
     parser.add_argument('-n', '--network', action='store_true', default=False,
                         help='Use network prefix instead of netmask')
+    parser.add_argument('--nocolor', action='store_true',
+                        help='No color output')
     return parser.parse_args()
 
 
@@ -590,7 +590,7 @@ def main():
 
     args = parse_args()
 
-    if not (args.color and use_color):
+    if args.nocolor:
         use_color = False
     if not (args.network and NETADDR):
         NETADDR = False
