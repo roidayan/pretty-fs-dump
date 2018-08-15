@@ -563,6 +563,7 @@ def parse_fs(sample):
             ft = FlowTable(attr)
             fts[ft['table_id']] = ft
         elif group == 'FTE':
+            attr.setdefault('group_id', 0)
             fte = FlowTableEntry(attr)
             ftes.append(fte)
         else:
