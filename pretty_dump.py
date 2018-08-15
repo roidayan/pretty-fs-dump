@@ -79,22 +79,36 @@ class Flow():
     def __getitem__(self, key):
         return self.attr.get(key, None)
 
+    @property
+    def table_id(self):
+        return 'table_id(0x%x)' % self.attr['table_id']
+
+
+class FlowTable(Flow):
+    @property
+    def action(self):
+        act1 = []
+
+        if self['table_miss_mode'] == '0x1':
+            dst_id = self['table_miss_id']
+            act1.append('FLOW_TABLE(%s)' % dst_id)
+
+        return ' action:%s' % ','.join(act1)
+
+    def __str__(self):
+        out = []
+        out.append(self.table_id)
+        out.append(self.action)
+        out = ','.join(out)
+        out = colorize(out)
+        return out
+
 
 class FlowGroup(Flow):
     pass
 
 
-class FlowTable(Flow):
-    pass
-
-
 class FlowTableEntry(Flow):
-    @property
-    def table_id(self):
-        if verbose < 3:
-            return
-        return 'table_id(0x%x)' % self.attr['table_id']
-
     def get_mask(self, key):
         return self.group[key] or '0x0'
 
@@ -570,6 +584,18 @@ def parse_fs(sample):
             print 'ERROR: unknown type %s' % group
 
 
+def dump_all_fts():
+    for ft_id in fts:
+        if ft_id < 1000 and verbose < 4:
+            continue
+        ft = fts[ft_id]
+        try:
+            print ft
+        except Exception:
+            print ft.attrs
+            raise
+
+
 def dump_all_ftes():
     _ftes = sorted(ftes, key = lambda r:r['table_id'])
 
@@ -600,6 +626,7 @@ def main():
 
     verbose = args.verbose
     parse_fs(args.sample)
+    dump_all_fts()
     dump_all_ftes()
 
 
