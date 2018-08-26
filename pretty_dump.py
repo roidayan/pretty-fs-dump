@@ -588,7 +588,9 @@ def parse_fs(sample):
 
 
 def dump_all_fts():
-    for ft_id in fts:
+    _fts = sorted(fts)
+
+    for ft_id in _fts:
         if ft_id < 1000 and verbose < 4:
             continue
         ft = fts[ft_id]
@@ -600,7 +602,7 @@ def dump_all_fts():
 
 
 def dump_all_ftes():
-    _ftes = sorted(ftes, key = lambda r:r['table_id'])
+    _ftes = sorted(ftes, key=lambda r:r['table_id'])
 
     for fte in _ftes:
         if fte['table_id'] < 1000 and verbose < 4:
