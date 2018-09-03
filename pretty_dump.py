@@ -38,6 +38,7 @@ FT_ACTION_FWD     = 1 << 2
 FT_ACTION_COUNT   = 1 << 3
 FT_ACTION_ENCAP   = 1 << 4
 FT_ACTION_DECAP   = 1 << 5
+FT_ACTION_MOD_HDR = 1 << 6
 
 
 def colorize(out):
@@ -457,6 +458,11 @@ class FlowTableEntry(Flow):
                 else:
                     print 'ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id)
                     continue
+        if act & FT_ACTION_MOD_HDR:
+            act &= ~FT_ACTION_MOD_HDR
+            self._ignore.append('modify_header_id')
+            mod_hdr_id = self['modify_header_id'] or '0x0'
+            act1.append('set(mod_hdr_id=%s)' % mod_hdr_id)
         if act:
             print 'ERROR: unknown action %s' % act
 
