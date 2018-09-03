@@ -50,6 +50,9 @@ def colorize(out):
         'esw': 'green',
         'vport': 'green',
         'tunnel': 'blue',
+        'encap_id': 'green',
+        'mod_hdr_id': 'green',
+        'set': 'yellow',
         'in_port': 'yellow',
         'eth': 'blue',
         'eth_type': 'blue',
@@ -60,6 +63,11 @@ def colorize(out):
         'action': 'red',
         'src': 'cyan',
         'dst': 'cyan',
+        'frag': 'cyan',
+        'proto': 'cyan',
+        'dscp': 'cyan',
+        'encap_en': 'yellow',
+        'decap_en': 'yellow',
     }
 
     for word in ccc:
