@@ -99,9 +99,19 @@ class FlowTable(Flow):
 
         return ' action:%s' % ','.join(act1)
 
+    @property
+    def en_attrs(self):
+        en = []
+        for key in self.attr.keys():
+            if key.endswith('_en'):
+                en.append('%s(%s)' % (key, self[key]))
+
+        return en
+
     def __str__(self):
         out = []
         out.append(self.table_id)
+        out.extend(self.en_attrs)
         out.append(self.action)
         out = ','.join(out)
         out = colorize(out)
