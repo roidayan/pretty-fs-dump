@@ -146,6 +146,16 @@ class FlowTableEntry(Flow):
         return 'eth_type(%s)' % eth_type
 
     @property
+    def ip_dscp(self):
+        k = '%s.ip_dscp' % self.get_headers()
+        self._ignore.append(k)
+        dscp = self[k]
+        if not dscp:
+            return
+        mask = self.get_mask(k)
+        return 'dscp=%s/%s' % (dscp, mask)
+
+    @property
     def ipv4(self):
         items = []
 
@@ -183,6 +193,10 @@ class FlowTableEntry(Flow):
             items.append('dst='+dst)
         if ip_proto:
             items.append('proto=%s' % ip_proto)
+
+        ip_dscp = self.ip_dscp
+        if ip_dscp:
+            items.append(ip_dscp)
 
         frag_mask = self.get_mask(self.get_headers() + '.frag')
         if frag_mask != '0x0':
