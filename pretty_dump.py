@@ -433,21 +433,20 @@ class FlowTableEntry(Flow):
 
     @property
     def counter(self):
-        self._ignore.extend([
-            'flow_counter_list_size',
-            'flow_counter[0].flow_counter_id',
-            'flow_counter[1].flow_counter_id',
-        ])
+        self._ignore.append('flow_counter_list_size')
+        counters = []
 
-        if verbose < 2:
+        # counter id starts from last destination id
+        dst_size = int(self['destination_list_size'] or '0', 0)
+        size = int(self['flow_counter_list_size'] or '0', 0)
+        for i in range(dst_size, size+dst_size):
+            self._ignore.append('flow_counter[%d].flow_counter_id' % i)
+            counters.append(self['flow_counter[%d].flow_counter_id' % i])
+
+        if verbose < 2 or not counters:
             return
 
-        counter_id = (self['flow_counter[0].flow_counter_id'] or
-                      self['flow_counter[1].flow_counter_id'])
-        if not counter_id:
-            return
-
-        return ' counter:%s' % counter_id
+        return ' counters:%s' % ','.join(counters)
 
     @property
     def action(self):
