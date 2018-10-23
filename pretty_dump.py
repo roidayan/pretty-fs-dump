@@ -474,10 +474,14 @@ class FlowTableEntry(Flow):
                 self._ignore.append('destination[%d].destination_id' % i)
                 self._ignore.append('destination[%d].destination_type' % i)
                 self._ignore.append('destination[%d].dst_esw_owner_vhca_id' % i)
+                self._ignore.append('destination[%d].dst_esw_owner_vhca_id_valid' % i)
                 dst_id = self['destination[%d].destination_id' % i] or '0x0'
                 dst_type = self['destination[%d].destination_type' % i]
                 dst_type0 = dst_type.split()[0]
                 dst_esw_owner_vhca_id = self['destination[%d].dst_esw_owner_vhca_id' % i]
+                dst_esw_owner_vhca_id_valid = self['destination[%d].dst_esw_owner_vhca_id_valid' % i]
+                if dst_esw_owner_vhca_id_valid == '0x1' and not dst_esw_owner_vhca_id:
+                    dst_esw_owner_vhca_id = '0x0'
                 if dst_esw_owner_vhca_id:
                     act1.append('esw(%s)' % dst_esw_owner_vhca_id)
                 if dst_type0 == 'VPORT':
