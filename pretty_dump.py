@@ -469,6 +469,11 @@ class FlowTableEntry(Flow):
             act1.append('set(tunnel(encap_id=%s))' % encap_id)
         if act & FT_ACTION_DECAP:
             act &= ~FT_ACTION_DECAP
+        if act & FT_ACTION_MOD_HDR:
+            act &= ~FT_ACTION_MOD_HDR
+            self._ignore.append('modify_header_id')
+            mod_hdr_id = self['modify_header_id'] or '0x0'
+            act1.append('set(mod_hdr_id=%s)' % mod_hdr_id)
         if act & FT_ACTION_DROP:
             act &= ~FT_ACTION_DROP
             act1.append('drop')
@@ -498,11 +503,6 @@ class FlowTableEntry(Flow):
                 else:
                     print 'ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id)
                     continue
-        if act & FT_ACTION_MOD_HDR:
-            act &= ~FT_ACTION_MOD_HDR
-            self._ignore.append('modify_header_id')
-            mod_hdr_id = self['modify_header_id'] or '0x0'
-            act1.append('set(mod_hdr_id=%s)' % mod_hdr_id)
         if act:
             print 'ERROR: unknown action %s' % act
 
