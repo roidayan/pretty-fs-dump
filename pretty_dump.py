@@ -48,6 +48,7 @@ def colorize(out):
     ccc = {
         'table_id': 'yellow',
         'esw': 'green',
+        'uplink': 'green',
         'vport': 'green',
         'vport1': 'green',
         'vport2': 'green',
