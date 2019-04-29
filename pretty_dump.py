@@ -598,8 +598,12 @@ def parse_fs(sample):
     # destination[0].destination_id                                                   :0x89
     # destination[0].destination_type                                                 :TIR (0x2)
 
-    with open(sample, 'r') as f:
-        data = f.read().split("\n\n")
+    try:
+        with open(sample, 'r') as f:
+            data = f.read().split("\n\n")
+    except IOError, e:
+        print e
+        sys.exit(1)
 
     # parse data
     for block in data:
