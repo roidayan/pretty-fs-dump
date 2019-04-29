@@ -224,9 +224,6 @@ class FlowTableEntry(Flow):
                 items.append('frag=no')
         self._ignore.append(self.get_headers() + '.frag')
 
-        if not items:
-            return
-
         try:
             ip_ver = int(self[self.get_headers() + '.ip_version'], 0)
             ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
