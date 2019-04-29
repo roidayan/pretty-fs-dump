@@ -50,6 +50,7 @@ def colorize(out):
         'esw': 'green',
         'uplink': 'green',
         'vport': 'green',
+        'vport0': 'green',
         'vport1': 'green',
         'vport2': 'green',
         'vport3': 'green',
