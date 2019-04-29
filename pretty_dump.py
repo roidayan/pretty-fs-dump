@@ -70,6 +70,7 @@ def colorize(out):
         'action': 'red',
         'src': 'cyan',
         'dst': 'cyan',
+        'tun_id': 'cyan',
         'frag': 'cyan',
         'proto': 'cyan',
         'dscp': 'cyan',
