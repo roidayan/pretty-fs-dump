@@ -61,6 +61,7 @@ def colorize(out):
         'mod_hdr_id': 'green',
         'set':        'yellow',
         'in_port':    'yellow',
+        'source_sqn': 'yellow',
         'eth':        'blue',
         'eth_type':   'blue',
         'ipv4':       'green',
@@ -429,6 +430,18 @@ class FlowTableEntry(Flow):
         return 'esw(%s)' % esw
 
     @property
+    def source_sqn(self):
+        self._ignore.append('misc_parameters.source_sqn')
+
+        val = self['misc_parameters.source_sqn']
+        if not val:
+            if self.group['misc_parameters.source_sqn']:
+                val = '0'
+            else:
+                return ''
+        return 'source_sqn(%s)' % val
+
+    @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
 
@@ -537,6 +550,7 @@ class FlowTableEntry(Flow):
         if self.is_vxlan:
             self.set_headers('inner')
         x.append(self.in_port)
+        x.append(self.source_sqn)
         x.append(self.mac)
         x.append(self.vlan)
         y = []
