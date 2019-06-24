@@ -148,7 +148,7 @@ class FlowTableEntry(Flow):
         try:
             return fgs[self['group_id']]
         except KeyError:
-            #print 'ERROR: fte without group id'
+            print 'ERROR: canot find group id 0x%x' % self['group_id']
             return None
 
     @property
@@ -679,7 +679,7 @@ def dump_all_ftes():
             print fte
         except Exception:
             print fte.attrs
-            raise
+            continue
 
 
 def main():
