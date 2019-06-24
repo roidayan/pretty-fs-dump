@@ -141,15 +141,18 @@ class FlowGroup(Flow):
 
 class FlowTableEntry(Flow):
     def get_mask(self, key):
-        return self.group[key] or '0x0'
+        try:
+            return self.group[key] or '0x0'
+        except KeyError:
+            return '0x0'
 
     @property
     def group(self):
         try:
             return fgs[self['group_id']]
         except KeyError:
-            print 'ERROR: canot find group id 0x%x' % self['group_id']
-            return None
+            #print 'ERROR: canot find group id 0x%x' % self['group_id']
+            return {}
 
     @property
     def ethertype(self):
@@ -432,7 +435,7 @@ class FlowTableEntry(Flow):
 
         val = self['misc_parameters.source_sqn']
         if not val:
-            if self.group['misc_parameters.source_sqn']:
+            if self.get_mask('misc_parameters.source_sqn'):
                 val = '0'
             else:
                 return ''
@@ -444,7 +447,7 @@ class FlowTableEntry(Flow):
 
         port = self['misc_parameters.source_port']
         if not port:
-            if self.group['misc_parameters.source_port']:
+            if self.get_mask('misc_parameters.source_port'):
                 port = '0'
             else:
                 return ''
@@ -679,7 +682,7 @@ def dump_all_ftes():
             print fte
         except Exception:
             print fte.attrs
-            continue
+            raise
 
 
 def main():
