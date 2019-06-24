@@ -435,7 +435,7 @@ class FlowTableEntry(Flow):
 
         val = self['misc_parameters.source_sqn']
         if not val:
-            if self.get_mask('misc_parameters.source_sqn'):
+            if self.get_mask('misc_parameters.source_sqn') != '0x0':
                 val = '0'
             else:
                 return ''
@@ -447,7 +447,7 @@ class FlowTableEntry(Flow):
 
         port = self['misc_parameters.source_port']
         if not port:
-            if self.get_mask('misc_parameters.source_port'):
+            if self.get_mask('misc_parameters.source_port') != '0x0':
                 port = '0'
             else:
                 return ''
