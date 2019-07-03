@@ -68,6 +68,7 @@ def colorize(out):
         'ipv6':       'green',
         'udp':        'magenta',
         'tcp':        'magenta',
+        'tcp_flags':  'magenta',
         'action':   'red',
         'src':      'cyan',
         'dst':      'cyan',
@@ -274,6 +275,16 @@ class FlowTableEntry(Flow):
         # udp(src=,dst=)
         # tcp(src=,dst=)
         return out.lstrip(',')
+
+    @property
+    def tcp_flags(self):
+        flags = None
+        mask = self.get_mask(self.get_headers() + '.tcp_flags')
+        if mask != '0x0':
+            flags = self[self.get_headers() + '.tcp_flags']
+            flags = 'tcp_flags(%s/%s)' % (flags, mask)
+        self._ignore.append(self.get_headers() + '.tcp_flags')
+        return flags
 
     @property
     def mac(self):
@@ -562,6 +573,7 @@ class FlowTableEntry(Flow):
         y.append(self.ethertype)
         y.append(self.ipv4)
         y.append(self.ports)
+        y.append(self.tcp_flags)
         y = list(filter(None, y))
         if self.is_vlan and y:
             x.append('encap(' + ','.join(y) + ')')
