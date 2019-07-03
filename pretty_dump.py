@@ -195,17 +195,29 @@ class FlowTableEntry(Flow):
             else:
                 return None
 
+        def get_proto():
+            try:
+                ip_proto = str(int(self[self.get_headers() + '.ip_protocol'], 0))
+                ip_proto_mask = self.get_mask(self.get_headers() + '.ip_protocol')
+                if ip_proto_mask != '0xff':
+                    ip_proto += '/' + ip_proto_mask
+                self._ignore.append(self.get_headers() + '.ip_protocol')
+            except TypeError:
+                ip_proto = None
+            return ip_proto
+
+        def get_frag():
+            frag = None
+            frag_mask = self.get_mask(self.get_headers() + '.frag')
+            if frag_mask != '0x0':
+                frag = 'yes' if self[self.get_headers() + '.frag'] else 'no'
+            self._ignore.append(self.get_headers() + '.frag')
+            return frag
+
         src = get_ip(self.get_headers() + '.src_ip_31_0')
         dst = get_ip(self.get_headers() + '.dst_ip_31_0')
-
-        try:
-            ip_proto = str(int(self[self.get_headers() + '.ip_protocol'], 0))
-            ip_proto_mask = self.get_mask(self.get_headers() + '.ip_protocol')
-            if ip_proto_mask != '0xff':
-                ip_proto += '/' + ip_proto_mask
-            self._ignore.append(self.get_headers() + '.ip_protocol')
-        except TypeError:
-            ip_proto = None
+        ip_proto = get_proto()
+        frag = get_frag()
 
         if src:
             items.append('src='+src)
@@ -213,19 +225,12 @@ class FlowTableEntry(Flow):
             items.append('dst='+dst)
         if ip_proto:
             items.append('proto=%s' % ip_proto)
+        if frag:
+            items.append('frag=%s' % frag)
 
         ip_dscp = self.ip_dscp
         if ip_dscp:
             items.append(ip_dscp)
-
-        frag_mask = self.get_mask(self.get_headers() + '.frag')
-        if frag_mask != '0x0':
-            frag = self[self.get_headers() + '.frag']
-            if frag:
-                items.append('frag=yes')
-            else:
-                items.append('frag=no')
-        self._ignore.append(self.get_headers() + '.frag')
 
         try:
             ip_ver = int(self[self.get_headers() + '.ip_version'], 0)
