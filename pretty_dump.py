@@ -241,13 +241,16 @@ class FlowTableEntry(Flow):
             ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
             self._ignore.append(self.get_headers() + '.ip_version')
             if ip_ver_mask == '0xf' and ip_ver == 6:
-                ip_ver = 'ipv6(%s)'
+                ip_ver = 'ipv6'
             else:
-                ip_ver = 'ipv4(%s)'
+                ip_ver = 'ipv4'
         except TypeError:
-            ip_ver = 'ipv4(%s)'
+            ip_ver = 'ipv4'
 
-        return ip_ver % ','.join(items)
+        if items:
+            ip_ver += '(%s)' % ','.join(items)
+
+        return ip_ver
 
     def get_port(self, k):
         try:
