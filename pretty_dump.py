@@ -376,6 +376,17 @@ class FlowTableEntry(Flow):
         return self['misc_parameters.vxlan_vni'] is not None
 
     @property
+    def tos(self):
+        ecn = int(self['outer_headers.ip_ecn'] or '0', 0)
+        ecn_mask = int(self.get_mask('outer_headers.ip_ecn'), 0)
+        dscp = int(self['outer_headers.ip_dscp'] or '0', 0)
+        dscp_mask = int(self.get_mask('outer_headers.ip_dscp'), 0)
+        key = hex((dscp << 2) | ecn)
+        mask = hex((dscp_mask << 2) | ecn_mask)
+        if key != '0x0' or mask != '0x0':
+            return 'tos=%s/%s' % (key, mask)
+
+    @property
     def vxlan(self):
         """
         tunnel(tun_id=0x01,src=1.2.3.4,dst=1.2.3.4,tp_src=4789,tp_dst=4789,ttl=128)
@@ -399,6 +410,7 @@ class FlowTableEntry(Flow):
         vni = get('tun_id', 'misc_parameters.vxlan_vni', 3)
         items.append(vni)
 
+        items.append(self.tos)
         items.append(self.mac)
         items.append(self.ipv4)
         # no need to show outer ethertype for tunnel.
