@@ -603,6 +603,11 @@ class FlowTableEntry(Flow):
         y.append(self.ipv4)
         y.append(self.ports)
         y.append(self.tcp_flags)
+        # event if not vxlan check also ip inner headers
+        if not self.is_vxlan:
+            self.set_headers('inner')
+            y.append(self.ipv4)
+
         y = list(filter(None, y))
         if self.is_vlan and y:
             x.append('encap(' + ','.join(y) + ')')
