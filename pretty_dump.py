@@ -81,6 +81,7 @@ def colorize(out):
         'dscp':     'cyan',
         'encap_en': 'yellow',
         'decap_en': 'yellow',
+        'reformat_en': 'yellow',
     }
 
     for word in ccc:
