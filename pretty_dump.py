@@ -558,6 +558,10 @@ class FlowTableEntry(Flow):
                 else:
                     print 'ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id)
                     continue
+        if act & FT_ACTION_ALLOW:
+            act &= ~FT_ACTION_ALLOW
+            act1.append('allow')
+
         if act:
             print 'ERROR: unknown action %s' % act
 
