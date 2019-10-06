@@ -28,9 +28,6 @@ ftes = []
 
 FDB_UPLINK_VPORT = '0xffff'
 
-# table type
-FT_ESW_FDB = '0x4'
-
 # actions
 FT_ACTION_ALLOW   = 1 << 0
 FT_ACTION_DROP    = 1 << 1
@@ -40,13 +37,41 @@ FT_ACTION_ENCAP   = 1 << 4
 FT_ACTION_DECAP   = 1 << 5
 FT_ACTION_MOD_HDR = 1 << 6
 
+# table types
+NIC_RX = '0x0'
+NIC_TX = '0x1'
+ESwitch_egress_ACL = '0x2'
+ESwitch_ingress_ACL = '0x3'
+ESwitch_FDB = '0x4'
+Nic_Sniffer_Rx = '0x5'
+Nic_Sniffer_Tx = '0x6'
+NIC_RX_RDMA = '0x7'
+NIC_TX_RDMA = '0x8'
+
+def table_type_str(ft_type):
+    types = {
+        '0x0': 'NIC_RX',
+        '0x1': 'NIC_TX',
+        '0x2': 'ESwitch_egress_ACL',
+        '0x3': 'ESwitch_ingress_ACL',
+        '0x4': 'ESwitch_FDB',
+        '0x5': 'Nic_Sniffer_Rx',
+        '0x6': 'Nic_Sniffer_Tx',
+        '0x7': 'NIC_RX_RDMA',
+        '0x8': 'NIC_TX_RDMA',
+    }
+    if not ft_type:
+        ft_type = '0x0'
+    return types.get(ft_type)
+
 
 def colorize(out):
     if not use_color:
         return out
 
     ccc = {
-        'table_id': 'yellow',
+        'table_id':   'yellow',
+        'table_type': 'yellow',
         'esw':      'green',
         'uplink':   'green',
         'vport':    'green',
@@ -111,6 +136,10 @@ class Flow():
 
 class FlowTable(Flow):
     @property
+    def ft_type(self):
+        return 'table_type(%s)' % table_type_str(self['table_type'])
+
+    @property
     def action(self):
         act1 = []
 
@@ -134,6 +163,7 @@ class FlowTable(Flow):
 
     def __str__(self):
         out = []
+        out.append(self.ft_type)
         out.append(self.table_id)
         out.extend(self.en_attrs)
         out.append(self.action)
