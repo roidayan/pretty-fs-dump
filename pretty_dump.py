@@ -181,6 +181,10 @@ class FlowTableEntry(Flow):
 
     @property
     def ipv4(self):
+        ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
+        if ip_ver_mask == '0x0':
+            return
+
         items = []
 
         def get_ip(k):
