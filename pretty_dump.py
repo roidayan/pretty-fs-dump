@@ -65,6 +65,23 @@ def table_type_str(ft_type):
     return types.get(ft_type)
 
 
+def default_miss_table(ft_type):
+    types = {
+        '0x0': 'drop',
+        '0x1': 'fwd(NIC_vport,tx)',
+        '0x2': 'fwd(NIC_vport,rx)',
+        '0x3': 'fwd(FDB)',
+        '0x4': 'default(ESwitch_FDB)',
+        '0x5': 'drop',
+        '0x6': 'drop',
+        '0x7': 'RDMA_Transport_Offload',
+        '0x8': 'transmit',
+    }
+    if not ft_type:
+        ft_type = '0x0'
+    return types.get(ft_type)
+
+
 def colorize(out):
     if not use_color:
         return out
@@ -81,7 +98,6 @@ def colorize(out):
         'vport3':   'green',
         'vport4':   'green',
         'vport5':   'green',
-        'default_miss_table': 'green',
         'tunnel':   'blue',
         'encap_id':   'green',
         'mod_hdr_id': 'green',
@@ -145,10 +161,11 @@ class FlowTable(Flow):
 
         if self['table_miss_mode'] == '0x1':
             dst_id = self['table_miss_id'] or '0x0'
+            dst_id = 'FLOW_TABLE(%s)' % dst_id
         else:
-            dst_id = 'default_miss_table'
+            dst_id = default_miss_table(self['table_type'])
 
-        act1.append('FLOW_TABLE(%s)' % dst_id)
+        act1.append(dst_id)
 
         return ' action:%s' % ','.join(act1)
 
