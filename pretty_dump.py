@@ -89,6 +89,7 @@ def colorize(out):
     ccc = {
         'table_id':   'yellow',
         'table_type': 'yellow',
+        'level':      'yellow',
         'esw':      'green',
         'uplink':   'green',
         'vport':    'green',
@@ -156,6 +157,11 @@ class FlowTable(Flow):
         return 'table_type(%s)' % table_type_str(self['table_type'])
 
     @property
+    def ft_level(self):
+        level = self['level'] or '0x0'
+        return 'level(%s)' % level
+
+    @property
     def action(self):
         act1 = []
 
@@ -181,6 +187,7 @@ class FlowTable(Flow):
     def __str__(self):
         out = []
         out.append(self.ft_type)
+        out.append(self.ft_level)
         out.append(self.table_id)
         out.extend(self.en_attrs)
         out.append(self.action)
