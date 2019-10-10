@@ -138,6 +138,13 @@ def colorize(out):
 class Flow():
     def __init__(self, attr):
         self.attr = attr
+        self.fgs = [] # hold related fgs
+        self.ftes = [] # hold related ftes
+        self.tree = False
+        self._skip = []
+
+    def skip(self, key):
+        self._skip.append(key)
 
     @property
     def attrs(self):
@@ -148,10 +155,18 @@ class Flow():
 
     @property
     def table_id(self):
+        if 'table_id' in self._skip:
+            return
         return 'table_id(0x%x)' % self.attr['table_id']
 
 
 class FlowTable(Flow):
+    def add_fg(self, fg):
+        self.fgs.append(fg)
+
+    def add_fte(self, fte):
+        self.ftes.append(fte)
+
     @property
     def ft_type(self):
         return 'table_type(%s)' % table_type_str(self['table_type'])
@@ -184,6 +199,13 @@ class FlowTable(Flow):
 
         return en
 
+    def get_ftes(self):
+        out = ""
+        for fte in self.ftes:
+            fte.skip('table_id')
+            out += "\n  |_%s" % fte
+        return out
+
     def __str__(self):
         out = []
         out.append(self.ft_type)
@@ -193,6 +215,8 @@ class FlowTable(Flow):
         out.append(self.action)
         out = ','.join(out)
         out = colorize(out)
+        if self.tree:
+            out += self.get_ftes()
         return out
 
 
@@ -701,6 +725,8 @@ def parse_args():
                         help='Increase verbosity')
     parser.add_argument('-n', '--network', action='store_true', default=False,
                         help='Use network prefix instead of netmask')
+    parser.add_argument('-t', '--tree', action='store_true', default=False,
+                        help='Print tree style')
     parser.add_argument('--nocolor', action='store_true',
                         help='No color output')
     return parser.parse_args()
@@ -749,6 +775,7 @@ def parse_fs(sample):
         if group == 'FG':
             fg = FlowGroup(attr)
             fgs[fg['group_id']] = fg
+            fts[fg['table_id']].add_fg(fg)
         elif group == 'FT':
             ft = FlowTable(attr)
             fts[ft['table_id']] = ft
@@ -756,11 +783,12 @@ def parse_fs(sample):
             attr.setdefault('group_id', 0)
             fte = FlowTableEntry(attr)
             ftes.append(fte)
+            fts[fte['table_id']].add_fte(fte)
         else:
             print 'ERROR: unknown type %s' % group
 
 
-def dump_all_fts():
+def dump_all_fts(tree=False):
     _fts = sorted(fts)
 
     for ft_id in _fts:
@@ -768,6 +796,8 @@ def dump_all_fts():
             continue
         ft = fts[ft_id]
         try:
+            if tree:
+                ft.tree = True
             print ft
         except Exception:
             print ft.attrs
@@ -804,8 +834,9 @@ def main():
 
     verbose = args.verbose
     parse_fs(args.sample)
-    dump_all_fts()
-    dump_all_ftes()
+    dump_all_fts(args.tree)
+    if not args.tree:
+        dump_all_ftes()
 
 
 if __name__ == "__main__":
