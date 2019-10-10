@@ -789,7 +789,7 @@ def parse_fs(sample):
 
 
 def dump_all_fts(tree=False):
-    _fts = sorted(fts)
+    _fts = sorted(fts, key=lambda r:(fts[r]['table_type'], r))
 
     for ft_id in _fts:
         if ft_id < 1000 and verbose < 4:
