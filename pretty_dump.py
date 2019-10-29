@@ -104,6 +104,7 @@ def colorize(out):
         'mod_hdr_id': 'green',
         'allow':      'yellow',
         'set':        'yellow',
+        'reg_c_0':    'yellow',
         'in_port':    'yellow',
         'source_sqn': 'yellow',
         'eth':        'blue',
@@ -561,6 +562,16 @@ class FlowTableEntry(Flow):
         return 'source_sqn(%s)' % val
 
     @property
+    def metadata_reg_c(self):
+        for i in range(8):
+            reg = 'reg_c_%s' % i
+            k = 'misc_2_parameters.metadata_%s' % reg
+            self._ignore.append(k)
+            m = self.get_mask(k)
+            if m != '0x0':
+                return '%s(%s/%s)' % (reg, '?', m)
+
+    @property
     def in_port(self):
         self._ignore.append('misc_parameters.source_port')
 
@@ -672,6 +683,7 @@ class FlowTableEntry(Flow):
         x.append(self.vxlan)
         if self.is_vxlan:
             self.set_headers('inner')
+        x.append(self.metadata_reg_c)
         x.append(self.in_port)
         x.append(self.source_sqn)
         x.append(self.mac)
