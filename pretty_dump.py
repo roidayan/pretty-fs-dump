@@ -104,6 +104,7 @@ def colorize(out):
         'mod_hdr_id': 'green',
         'allow':      'yellow',
         'set':        'yellow',
+        'unset':      'yellow',
         'reg_c_0':    'yellow',
         'in_port':    'yellow',
         'source_sqn': 'yellow',
@@ -616,6 +617,7 @@ class FlowTableEntry(Flow):
             act1.append('set(tunnel(encap_id=%s))' % encap_id)
         if act & FT_ACTION_DECAP:
             act &= ~FT_ACTION_DECAP
+            act1.append('unset(tunnel)')
         if act & FT_ACTION_MOD_HDR:
             act &= ~FT_ACTION_MOD_HDR
             self._ignore.append('modify_header_id')
