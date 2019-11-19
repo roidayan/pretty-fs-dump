@@ -270,6 +270,8 @@ class FlowTableEntry(Flow):
     @property
     def ipv4(self):
         ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
+        if not self.ethertype_raw:
+            return
 
         items = []
 
