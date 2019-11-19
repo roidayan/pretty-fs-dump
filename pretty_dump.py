@@ -285,26 +285,14 @@ class FlowTableEntry(Flow):
             self._ignore.append(key2)
             self._ignore.append(key3)
             self._ignore.append(key4)
-            p1 = self[key1]
-            p2 = self[key2]
-            p3 = self[key3]
-            p4 = self[key4]
-            if p1:
-                p1 = p1[2:].lstrip('0')
-            else:
-                p1 = ":"
-            if p2:
-                p2 = p2[2:].lstrip('0')
-            else:
-                p2 = ":"
-            if p3:
-                p3 = p3[2:].lstrip('0')
-            else:
-                p3 = ":"
-            if p4:
-                p4 = p4[2:].lstrip('0')
-            else:
-                p4 = ":"
+            p1 = self[key1] or '0x00000000'
+            p2 = self[key2] or '0x00000000'
+            p3 = self[key3] or '0x00000000'
+            p4 = self[key4] or '0x00000000'
+            p1 = p1[2:].lstrip('0')
+            p2 = p2[2:].lstrip('0')
+            p3 = p3[2:].lstrip('0')
+            p4 = p4[2:].lstrip('0')
             return "%s:%s:%s:%s" % (p4, p3, p2, p1)
 
         def get_ip(k):
