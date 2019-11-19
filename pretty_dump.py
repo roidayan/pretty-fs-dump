@@ -242,12 +242,17 @@ class FlowTableEntry(Flow):
             return {}
 
     @property
-    def ethertype(self):
+    def ethertype_raw(self):
         k = '%s.ethertype' % self.get_headers()
+        self._ignore.append(k)
         ethertype = self[k]
         if not ethertype:
             return ''
-        self._ignore.append(k)
+        return ethertype
+
+    @property
+    def ethertype(self):
+        ethertype = self.ethertype_raw
         eth_type = '0x' + ethertype[2:].zfill(4)
         # TODO: in verbose print tcp,udp,arp,etc
         return 'eth_type(%s)' % eth_type
@@ -265,10 +270,40 @@ class FlowTableEntry(Flow):
     @property
     def ipv4(self):
         ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
-        if ip_ver_mask == '0x0':
-            return
 
         items = []
+
+        def get_ip6(x):
+            headers = self.get_headers()
+            key1 = headers + '.' + x + '_ip_31_0'
+            key2 = headers + '.' + x + '_ip_63_32'
+            key3 = headers + '.' + x + '_ip_95_64'
+            key4 = headers + '.' + x + '_ip_127_96'
+            self._ignore.append(key1)
+            self._ignore.append(key2)
+            self._ignore.append(key3)
+            self._ignore.append(key4)
+            p1 = self[key1]
+            p2 = self[key2]
+            p3 = self[key3]
+            p4 = self[key4]
+            if p1:
+                p1 = p1[2:].lstrip('0')
+            else:
+                p1 = ":"
+            if p2:
+                p2 = p2[2:].lstrip('0')
+            else:
+                p2 = ":"
+            if p3:
+                p3 = p3[2:].lstrip('0')
+            else:
+                p3 = ":"
+            if p4:
+                p4 = p4[2:].lstrip('0')
+            else:
+                p4 = ":"
+            return "%s:%s:%s:%s" % (p4, p3, p2, p1)
 
         def get_ip(k):
             self._ignore.append(k)
@@ -305,10 +340,35 @@ class FlowTableEntry(Flow):
             self._ignore.append(self.get_headers() + '.frag')
             return frag
 
-        src = get_ip(self.get_headers() + '.src_ip_31_0')
-        dst = get_ip(self.get_headers() + '.dst_ip_31_0')
+        def get_ip_ver():
+            try:
+                ip_ver = self[self.get_headers() + '.ip_version']
+                if not ip_ver:
+                    ethertype = self.ethertype_raw
+                    if ethertype == '0x86dd':
+                        return 'ipv6'
+                ip_ver = int(ip_ver, 0)
+                ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
+                self._ignore.append(self.get_headers() + '.ip_version')
+                print ip_ver
+                if ip_ver_mask == '0xf' and ip_ver == 6:
+                    ip_ver = 'ipv6'
+                else:
+                    ip_ver = 'ipv4'
+            except TypeError:
+                ip_ver = 'ipv4'
+            return ip_ver
+
+        ip_ver = get_ip_ver()
         ip_proto = get_proto()
         frag = get_frag()
+
+        if ip_ver == 'ipv6':
+            src = get_ip6('src')
+            dst = get_ip6('dst')
+        else:
+            src = get_ip(self.get_headers() + '.src_ip_31_0')
+            dst = get_ip(self.get_headers() + '.dst_ip_31_0')
 
         if src:
             items.append('src='+src)
@@ -322,17 +382,6 @@ class FlowTableEntry(Flow):
         ip_dscp = self.ip_dscp
         if ip_dscp:
             items.append(ip_dscp)
-
-        try:
-            ip_ver = int(self[self.get_headers() + '.ip_version'], 0)
-            ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
-            self._ignore.append(self.get_headers() + '.ip_version')
-            if ip_ver_mask == '0xf' and ip_ver == 6:
-                ip_ver = 'ipv6'
-            else:
-                ip_ver = 'ipv4'
-        except TypeError:
-            ip_ver = 'ipv4'
 
         if items:
             ip_ver += '(%s)' % ','.join(items)
