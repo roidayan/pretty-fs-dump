@@ -423,7 +423,7 @@ class FlowTableEntry(Flow):
         flags = None
         mask = self.get_mask(self.get_headers() + '.tcp_flags')
         if mask != '0x0':
-            flags = self[self.get_headers() + '.tcp_flags']
+            flags = self[self.get_headers() + '.tcp_flags'] or '0'
             flags = 'tcp_flags(%s/%s)' % (flags, mask)
         self._ignore.append(self.get_headers() + '.tcp_flags')
         return flags
