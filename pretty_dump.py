@@ -106,6 +106,11 @@ def colorize(out):
         'set':        'yellow',
         'unset':      'yellow',
         'reg_c_0':    'yellow',
+        'reg_c_1':    'yellow',
+        'reg_c_2':    'yellow',
+        'reg_c_3':    'yellow',
+        'reg_c_4':    'yellow',
+        'reg_c_5':    'yellow',
         'in_port':    'yellow',
         'source_sqn': 'yellow',
         'eth':        'blue',
@@ -603,13 +608,15 @@ class FlowTableEntry(Flow):
 
     @property
     def metadata_reg_c(self):
+        regs = []
         for i in range(8):
             reg = 'reg_c_%s' % i
             k = 'misc_2_parameters.metadata_%s' % reg
             self._ignore.append(k)
             m = self.get_mask(k)
             if m != '0x0':
-                return '%s(%s/%s)' % (reg, '?', m)
+                regs.append('%s(%s/%s)' % (reg, '?', m))
+        return regs
 
     @property
     def in_port(self):
@@ -724,7 +731,7 @@ class FlowTableEntry(Flow):
         x.append(self.vxlan)
         if self.is_vxlan:
             self.set_headers('inner')
-        x.append(self.metadata_reg_c)
+        x.extend(self.metadata_reg_c)
         x.append(self.in_port)
         x.append(self.source_sqn)
         x.append(self.mac)
