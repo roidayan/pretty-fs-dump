@@ -745,6 +745,7 @@ class FlowTableEntry(Flow):
         if not self.is_vxlan:
             self.set_headers('inner')
             y.append(self.ipv4)
+            y.append(self.tcp_flags)
 
         y = list(filter(None, y))
         if self.is_vlan and y:
