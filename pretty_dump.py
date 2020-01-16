@@ -126,6 +126,7 @@ def colorize(out):
         'tp_src':   'cyan',
         'tp_dst':   'cyan',
         'tun_id':   'cyan',
+        'geneve':   'cyan',
         'tos':      'cyan',
         'frag':     'cyan',
         'proto':    'cyan',
@@ -513,6 +514,14 @@ class FlowTableEntry(Flow):
         return self['misc_parameters.vxlan_vni'] is not None
 
     @property
+    def is_geneve(self):
+        return self['misc_parameters.geneve_vni'] is not None
+
+    @property
+    def is_tunnel(self):
+        return self.is_vxlan or self.is_geneve
+
+    @property
     def tos(self):
         ecn = int(self['outer_headers.ip_ecn'] or '0', 0)
         ecn_mask = int(self.get_mask('outer_headers.ip_ecn'), 0)
@@ -524,12 +533,12 @@ class FlowTableEntry(Flow):
             return 'tos=%s/%s' % (key, mask)
 
     @property
-    def vxlan(self):
+    def tunnel(self):
         """
         tunnel(tun_id=0x01,src=1.2.3.4,dst=1.2.3.4,tp_src=4789,tp_dst=4789,ttl=128)
         """
 
-        if not self.is_vxlan:
+        if not self.is_tunnel:
             return
 
         items = []
@@ -544,9 +553,12 @@ class FlowTableEntry(Flow):
             self._ignore.append(k)
             return v
 
-        vni = get('tun_id', 'misc_parameters.vxlan_vni', 3)
-        items.append(vni)
+        if self.is_vxlan:
+            vni = get('tun_id', 'misc_parameters.vxlan_vni', 3)
+        else:
+            vni = get('tun_id', 'misc_parameters.geneve_vni', 3)
 
+        items.append(vni)
         items.append(self.tos)
         items.append(self.mac)
         items.append(self.ipv4)
@@ -560,11 +572,13 @@ class FlowTableEntry(Flow):
         if dport:
             items.append('tp_dst=%s' % dport)
 
-        items = list(filter(None, items))
+        if self.is_geneve:
+            geneve_opts = ''
+            items.append('geneve(%s)' % geneve_opts)
 
+        items = list(filter(None, items))
         if not items:
             return
-
         return 'tunnel(%s)' % ','.join(items)
 
     def port_name(self, port):
@@ -728,8 +742,8 @@ class FlowTableEntry(Flow):
         x.append(self.table_id)
         x.append(self.in_esw)
         self.set_headers('outer')
-        x.append(self.vxlan)
-        if self.is_vxlan:
+        x.append(self.tunnel)
+        if self.is_tunnel:
             self.set_headers('inner')
         x.extend(self.metadata_reg_c)
         x.append(self.in_port)
@@ -741,8 +755,8 @@ class FlowTableEntry(Flow):
         y.append(self.ipv4)
         y.append(self.ports)
         y.append(self.tcp_flags)
-        # event if not vxlan check also ip inner headers
-        if not self.is_vxlan:
+        # check also inner headers even if not tunnel
+        if not self.is_tunnel:
             self.set_headers('inner')
             y.append(self.ipv4)
             y.append(self.tcp_flags)
