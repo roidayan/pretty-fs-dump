@@ -102,6 +102,7 @@ def colorize(out):
         'tunnel':   'blue',
         'encap_id':   'green',
         'mod_hdr_id': 'green',
+        'flow_tag':   'green',
         'allow':      'yellow',
         'set':        'yellow',
         'unset':      'yellow',
@@ -472,6 +473,11 @@ class FlowTableEntry(Flow):
         return 'eth(%s)' % ','.join(items)
 
     @property
+    def flow_tag(self):
+        self._ignore.append('flow_tag')
+        return self['flow_tag']
+
+    @property
     def is_vlan(self):
         return (self.get_mask('outer_headers.cvlan_tag') != '0x0' and
                 self['outer_headers.first_vid'])
@@ -668,6 +674,8 @@ class FlowTableEntry(Flow):
         act &= ~FT_ACTION_COUNT
         act1 = []
 
+        if self.flow_tag:
+            act1.append('set(flow_tag=%s)' % self.flow_tag)
         if self.is_vlan:
             act1.append('pop_vlan')
         if act & FT_ACTION_ENCAP:
