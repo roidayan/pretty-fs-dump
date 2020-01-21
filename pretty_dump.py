@@ -89,6 +89,8 @@ def colorize(out):
     ccc = {
         'table_id':   'yellow',
         'table_type': 'yellow',
+        'FLOW_TABLE': 'yellow',
+        'default':    'yellow',
         'level':      'yellow',
         'esw':      'green',
         'uplink':   'green',
@@ -140,6 +142,9 @@ def colorize(out):
     for word in ccc:
         word2 = colored(word, ccc[word])
         out = re.sub(r'\b(%s)\b' % word, word2, out)
+
+    # special
+    out = re.sub(r'\?', colored('?', 'red'), out)
 
     return out
 
