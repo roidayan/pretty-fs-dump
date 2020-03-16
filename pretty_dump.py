@@ -586,6 +586,7 @@ class FlowTableEntry(Flow):
             items.append('tp_dst=%s' % dport)
 
         if self.is_geneve:
+            proto = get('protocol_type', 'misc_parameters.geneve_protocol_type', 3)
             geneve_opts = ''
             items.append('geneve(%s)' % geneve_opts)
 
