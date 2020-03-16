@@ -259,12 +259,14 @@ class FlowTableEntry(Flow):
         self._ignore.append(k)
         ethertype = self[k]
         if not ethertype:
-            return ''
+            return
         return ethertype
 
     @property
     def ethertype(self):
         ethertype = self.ethertype_raw
+        if not ethertype:
+            return
         eth_type = '0x' + ethertype[2:].zfill(4)
         # TODO: in verbose print tcp,udp,arp,etc
         return 'eth_type(%s)' % eth_type
