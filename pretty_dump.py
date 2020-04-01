@@ -733,7 +733,7 @@ class FlowTableEntry(Flow):
             act1.append('allow')
 
         if act:
-            print 'ERROR: unknown action %s' % act
+            print 'ERROR: unknown action %s' % hex(act)
 
         return ' action:%s' % ','.join(act1)
 
