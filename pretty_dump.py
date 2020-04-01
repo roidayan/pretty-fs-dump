@@ -693,6 +693,9 @@ class FlowTableEntry(Flow):
         if act & FT_ACTION_VLAN_POP:
             act &= ~FT_ACTION_VLAN_POP
             act1.append('pop_vlan')
+        if act & FT_ACTION_VLAN_POP_2:
+            act &= ~FT_ACTION_VLAN_POP_2
+            act1.append('pop_vlan2')
         if act & FT_ACTION_VLAN_PUSH:
             act &= ~FT_ACTION_VLAN_PUSH
             self._ignore.append('push_vlan_tag.tpid')
