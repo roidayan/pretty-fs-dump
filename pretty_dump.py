@@ -37,6 +37,12 @@ FT_ACTION_ENCAP   = 1 << 4
 FT_ACTION_DECAP   = 1 << 5
 FT_ACTION_MOD_HDR = 1 << 6
 
+FT_ACTION_VLAN_POP  = 0x80
+FT_ACTION_VLAN_PUSH = 0x100
+FT_ACTION_VLAN_POP_2  = 0x400
+FT_ACTION_VLAN_PUSH_2 = 0x800
+
+
 # table types
 NIC_RX = '0x0'
 NIC_TX = '0x1'
@@ -684,8 +690,16 @@ class FlowTableEntry(Flow):
 
         if self.flow_tag:
             act1.append('set(flow_tag=%s)' % self.flow_tag)
-        if self.is_vlan:
+        if act & FT_ACTION_VLAN_POP:
+            act &= ~FT_ACTION_VLAN_POP
             act1.append('pop_vlan')
+        if act & FT_ACTION_VLAN_PUSH:
+            act &= ~FT_ACTION_VLAN_PUSH
+            self._ignore.append('push_vlan_tag.tpid')
+            self._ignore.append('push_vlan_tag.vid')
+            tpid = self['push_vlan_tag.tpid']
+            vid = str(int(self['push_vlan_tag.vid'], 0))
+            act1.append('push_vlan(vid=%s,tpid=%s)' % (vid, tpid))
         if act & FT_ACTION_ENCAP:
             act &= ~FT_ACTION_ENCAP
             self._ignore.append('encap_id')
