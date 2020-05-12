@@ -360,7 +360,6 @@ class FlowTableEntry(Flow):
                 ip_ver = int(ip_ver, 0)
                 ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
                 self._ignore.append(self.get_headers() + '.ip_version')
-                print ip_ver
                 if ip_ver_mask == '0xf' and ip_ver == 6:
                     ip_ver = 'ipv6'
                 else:
