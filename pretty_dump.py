@@ -288,6 +288,25 @@ class FlowTableEntry(Flow):
         return 'dscp=%s/%s' % (dscp, mask)
 
     @property
+    def ip_version_raw(self):
+        k = self.get_headers() + '.ip_version'
+        print k
+        self._ignore.append(k)
+        ip_ver_mask = self.get_mask(k)
+        if not ip_ver_mask or ip_ver_mask == '0x0':
+            return
+        ip_ver = self[k]
+        ip_ver = int(ip_ver, 0)
+        return ip_ver
+
+    @property
+    def ip_version(self):
+        ip_ver = self.ip_version_raw
+        if not ip_ver:
+            return
+        return 'ip_version(%s)' % ip_ver
+
+    @property
     def ipv4(self):
         ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
         if not self.ethertype_raw:
@@ -351,22 +370,15 @@ class FlowTableEntry(Flow):
             return frag
 
         def get_ip_ver():
-            try:
-                ip_ver = self[self.get_headers() + '.ip_version']
-                if not ip_ver:
-                    ethertype = self.ethertype_raw
-                    if ethertype == '0x86dd':
-                        return 'ipv6'
-                ip_ver = int(ip_ver, 0)
-                ip_ver_mask = self.get_mask(self.get_headers() + '.ip_version')
-                self._ignore.append(self.get_headers() + '.ip_version')
-                if ip_ver_mask == '0xf' and ip_ver == 6:
-                    ip_ver = 'ipv6'
-                else:
-                    ip_ver = 'ipv4'
-            except TypeError:
-                ip_ver = 'ipv4'
-            return ip_ver
+            ip_ver = self.ip_version_raw
+            if not ip_ver:
+                ethertype = self.ethertype_raw
+                if ethertype == '0x86dd':
+                    return 'ipv6'
+                return 'ipv4'
+            if ip_ver == 6:
+                return 'ipv6'
+            return 'ipv4'
 
         ip_ver = get_ip_ver()
         ip_proto = get_proto()
@@ -784,12 +796,14 @@ class FlowTableEntry(Flow):
         x.append(self.vlan)
         y = []
         y.append(self.ethertype)
+        y.append(self.ip_version)
         y.append(self.ipv4)
         y.append(self.ports)
         y.append(self.tcp_flags)
         # check also inner headers even if not tunnel
         if not self.is_tunnel:
             self.set_headers('inner')
+            y.append(self.ip_version)
             y.append(self.ipv4)
             y.append(self.tcp_flags)
 
