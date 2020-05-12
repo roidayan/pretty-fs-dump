@@ -290,7 +290,6 @@ class FlowTableEntry(Flow):
     @property
     def ip_version_raw(self):
         k = self.get_headers() + '.ip_version'
-        print k
         self._ignore.append(k)
         ip_ver_mask = self.get_mask(k)
         if not ip_ver_mask or ip_ver_mask == '0x0':
