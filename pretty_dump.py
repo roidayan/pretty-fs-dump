@@ -303,7 +303,23 @@ class FlowTableEntry(Flow):
         ip_ver = self.ip_version_raw
         if not ip_ver:
             return
-        return 'ip_version(%s)' % ip_ver
+        ip_proto = self.ip_proto
+        items = []
+        if ip_proto:
+            items.append('proto=%s' % ip_proto)
+        return 'ipv%s(%s)' % (ip_ver, ','.join(items))
+
+    @property
+    def ip_proto(self):
+        try:
+            ip_proto = str(int(self[self.get_headers() + '.ip_protocol'], 0))
+            ip_proto_mask = self.get_mask(self.get_headers() + '.ip_protocol')
+            if ip_proto_mask != '0xff':
+                ip_proto += '/' + ip_proto_mask
+            self._ignore.append(self.get_headers() + '.ip_protocol')
+        except TypeError:
+            ip_proto = None
+        return ip_proto
 
     @property
     def ipv4(self):
@@ -348,17 +364,6 @@ class FlowTableEntry(Flow):
             else:
                 return None
 
-        def get_proto():
-            try:
-                ip_proto = str(int(self[self.get_headers() + '.ip_protocol'], 0))
-                ip_proto_mask = self.get_mask(self.get_headers() + '.ip_protocol')
-                if ip_proto_mask != '0xff':
-                    ip_proto += '/' + ip_proto_mask
-                self._ignore.append(self.get_headers() + '.ip_protocol')
-            except TypeError:
-                ip_proto = None
-            return ip_proto
-
         def get_frag():
             frag = None
             frag_mask = self.get_mask(self.get_headers() + '.frag')
@@ -379,7 +384,7 @@ class FlowTableEntry(Flow):
             return 'ipv4'
 
         ip_ver = get_ip_ver()
-        ip_proto = get_proto()
+        ip_proto = self.ip_proto
         frag = get_frag()
 
         if ip_ver == 'ipv6':
