@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from __future__ import print_function
+
 import re
 import sys
 import argparse
@@ -181,6 +183,11 @@ class Flow():
 
 
 class FlowTable(Flow):
+    def __init__(self, attr):
+        super().__init__(attr)
+        if 'table_type' not in attr:
+            attr['table_type'] = '0x0'
+
     def add_fg(self, fg):
         self.fgs.append(fg)
 
@@ -256,7 +263,7 @@ class FlowTableEntry(Flow):
         try:
             return fgs[self['group_id']]
         except KeyError:
-            #print 'ERROR: canot find group id 0x%x' % self['group_id']
+            #print('ERROR: canot find group id 0x%x' % self['group_id'])
             return {}
 
     @property
@@ -757,14 +764,14 @@ class FlowTableEntry(Flow):
                 elif dst_type0 == 'FLOW_TABLE_':
                     act1.append('FLOW_TABLE(%s)' % dst_id)
                 else:
-                    print 'ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id)
+                    print('ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id))
                     continue
         if act & FT_ACTION_ALLOW:
             act &= ~FT_ACTION_ALLOW
             act1.append('allow')
 
         if act:
-            print 'ERROR: unknown action %s' % hex(act)
+            print('ERROR: unknown action %s' % hex(act))
 
         return ' action:%s' % ','.join(act1)
 
@@ -828,7 +835,7 @@ class FlowTableEntry(Flow):
                 del a[i]
 
         if a:
-            print '  -Missed: %s' % ', '.join(a)
+            print('  -Missed: %s' % ', '.join(a))
 
         x = list(filter(None, x))
 
@@ -871,8 +878,8 @@ def parse_fs(sample):
     try:
         with open(sample, 'r') as f:
             data = f.read().split("\n\n")
-    except IOError, e:
-        print e
+    except IOError as e:
+        print(e)
         sys.exit(1)
 
     # parse data
@@ -909,7 +916,7 @@ def parse_fs(sample):
             ftes.append(fte)
             fts[fte['table_id']].add_fte(fte)
         else:
-            print 'ERROR: unknown type %s' % group
+            print('ERROR: unknown type %s' % group)
 
 
 def dump_all_fts(tree=False):
@@ -922,9 +929,9 @@ def dump_all_fts(tree=False):
         try:
             if tree:
                 ft.tree = True
-            print ft
+            print(ft)
         except Exception:
-            print ft.attrs
+            print(ft.attrs)
             raise
 
 
@@ -938,9 +945,9 @@ def dump_all_ftes():
             continue
 
         try:
-            print fte
+            print(fte)
         except Exception:
-            print fte.attrs
+            print(fte.attrs)
             raise
 
 
