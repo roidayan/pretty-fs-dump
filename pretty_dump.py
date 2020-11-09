@@ -157,7 +157,7 @@ def colorize(out):
     return out
 
 
-class Flow():
+class Flow(object):
     def __init__(self, attr):
         self.attr = attr
         self.fgs = [] # hold related fgs
@@ -184,7 +184,7 @@ class Flow():
 
 class FlowTable(Flow):
     def __init__(self, attr):
-        super().__init__(attr)
+        super(FlowTable, self).__init__(attr)
         if 'table_type' not in attr:
             attr['table_type'] = '0x0'
 
