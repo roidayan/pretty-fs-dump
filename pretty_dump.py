@@ -330,7 +330,7 @@ class FlowTableEntry(Flow):
 
     @property
     def ipv4(self):
-        if not self.ethertype_raw:
+        if not self.ip_version_raw and not self.ethertype_raw:
             return
 
         items = []
