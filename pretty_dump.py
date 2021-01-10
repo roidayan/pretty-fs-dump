@@ -601,6 +601,7 @@ class FlowTableEntry(Flow):
         items.append(vni)
         items.append(self.tos)
         items.append(self.mac)
+        items.append(self.ip_version)
         items.append(self.ipv4)
         # no need to show outer ethertype for tunnel.
         self.ethertype
