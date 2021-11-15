@@ -98,6 +98,7 @@ def colorize(out):
         'table_id':   'yellow',
         'table_type': 'yellow',
         'FLOW_TABLE': 'yellow',
+        'SAMPLE':     'yellow',
         'default':    'yellow',
         'level':      'yellow',
         'esw':      'green',
@@ -763,8 +764,10 @@ class FlowTableEntry(Flow):
                     act1.append('TIR(%s)' % dst_id)
                 elif dst_type0 == 'FLOW_TABLE_':
                     act1.append('FLOW_TABLE(%s)' % dst_id)
+                elif dst_type == 'unknown (0x6)':
+                    act1.append('SAMPLE(%s)' % dst_id)
                 else:
-                    print('ERROR: unsupported dst type %s dst id %s' % (dst_type, dst_id))
+                    print('ERROR: unsupported dst type "%s" dst id %s' % (dst_type, dst_id))
                     continue
         if act & FT_ACTION_ALLOW:
             act &= ~FT_ACTION_ALLOW
