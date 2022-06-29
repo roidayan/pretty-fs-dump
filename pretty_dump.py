@@ -307,17 +307,6 @@ class FlowTableEntry(Flow):
         return ip_ver
 
     @property
-    def ip_version(self):
-        ip_ver = self.ip_version_raw
-        if not ip_ver:
-            return
-        ip_proto = self.ip_proto
-        items = []
-        if ip_proto:
-            items.append('proto=%s' % ip_proto)
-        return 'ipv%s(%s)' % (ip_ver, ','.join(items))
-
-    @property
     def ip_proto(self):
         try:
             ip_proto = str(int(self[self.get_headers() + '.ip_protocol'], 0))
@@ -809,14 +798,12 @@ class FlowTableEntry(Flow):
         x.append(self.vlan)
         y = []
         y.append(self.ethertype)
-        y.append(self.ip_version)
         y.append(self.ipv4)
         y.append(self.ports)
         y.append(self.tcp_flags)
         # check also inner headers even if not tunnel
         if not self.is_tunnel:
             self.set_headers('inner')
-            y.append(self.ip_version)
             y.append(self.ipv4)
             y.append(self.tcp_flags)
 
