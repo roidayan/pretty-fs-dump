@@ -513,9 +513,7 @@ class FlowTableEntry(Flow):
         self._ignore.append('outer_headers.cvlan_tag')
 
         def get_vlan():
-            vid = self['outer_headers.first_vid']
-            if not vid:
-                return 0
+            vid = self['outer_headers.first_vid'] or '0'
             vlan_id = str(int(vid, 0))
             vlan_mask = self.get_mask('outer_headers.first_vid')
             if vlan_mask != '0xfff':
