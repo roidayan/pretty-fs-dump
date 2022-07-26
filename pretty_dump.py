@@ -503,8 +503,7 @@ class FlowTableEntry(Flow):
 
     @property
     def is_vlan(self):
-        return (self.get_mask('outer_headers.cvlan_tag') != '0x0' and
-                self['outer_headers.first_vid'])
+        return self.get_mask('outer_headers.cvlan_tag') != '0x0'
 
     @property
     def vlan(self):
