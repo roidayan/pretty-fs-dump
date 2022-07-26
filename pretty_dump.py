@@ -510,6 +510,10 @@ class FlowTableEntry(Flow):
         if not self.is_vlan:
             return
 
+        # special case !vlan
+        if not self['outer_headers.cvlan_tag']:
+            return '!vlan'
+
         self._ignore.append('outer_headers.cvlan_tag')
 
         def get_vlan():
