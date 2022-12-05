@@ -756,6 +756,8 @@ class FlowTableEntry(Flow):
                     act1.append('FLOW_TABLE(%s)' % dst_id)
                 elif dst_type == 'unknown (0x6)':
                     act1.append('SAMPLE(%s)' % dst_id)
+                elif dst_type == 'unknown (0x8)':
+                    act1.append('UPLINK(%s)' % dst_id)
                 else:
                     print('ERROR: unsupported dst type "%s" dst id %s' % (dst_type, dst_id))
                     continue
