@@ -102,14 +102,7 @@ def colorize(out):
         'default':    'yellow',
         'level':      'yellow',
         'esw':      'green',
-        'uplink':   'green',
         'vport':    'green',
-        'vport0':   'green',
-        'vport1':   'green',
-        'vport2':   'green',
-        'vport3':   'green',
-        'vport4':   'green',
-        'vport5':   'green',
         'tunnel':   'blue',
         'encap_id':   'green',
         'mod_hdr_id': 'green',
@@ -614,17 +607,7 @@ class FlowTableEntry(Flow):
         return 'tunnel(%s)' % ','.join(items)
 
     def port_name(self, port):
-        if verbose < 1:
-            return 'vport(%s)' % port
-
-        if not port:
-            return 'PortNone'
-
-        if port.lower() == FDB_UPLINK_VPORT.lower():
-            port = 'uplink'
-        else:
-            port = 'vport%s' % int(port, 0)
-        return port
+        return 'vport(%s)' % port
 
     @property
     def in_esw(self):
